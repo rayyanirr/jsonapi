@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -18,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->api(append: [
             ValidateJsonApiHeaders::class,
+            ValidateJsonApiDocument::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
@@ -41,6 +43,8 @@ return Application::configure(basePath: dirname(__DIR__))
             }
             return response()->json([
                 'errors' => $errors
-            ], 422);
+            ], 422, [
+                'content-type' => 'application/vnd.api+json'
+            ]);
         });
     })->create();
