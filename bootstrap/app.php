@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Middleware\ValidateJsonApiHeaders;
+use App\Http\Responses\JsonApiValidationErrorResponse;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -26,25 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (ValidationException $e) {
 
-            $title = $e->withMessages([]);
-            $errors = [];
+            return new JsonApiValidationErrorResponse($e);
 
-            foreach ($e->errors() as $field => $message) {
-
-                $pointer = "/" . str_replace('.', '/', $field);
-
-                $errors[] = [
-                    'title' => $title->getMessage(),
-                    'detail' => $message[0],
-                    'source' => [
-                        'pointer' => $pointer
-                    ]
-                ];
-            }
-            return response()->json([
-                'errors' => $errors
-            ], 422, [
-                'content-type' => 'application/vnd.api+json'
-            ]);
         });
     })->create();
