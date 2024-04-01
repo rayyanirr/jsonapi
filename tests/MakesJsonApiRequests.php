@@ -11,17 +11,33 @@ use Closure;
 trait MakesJsonApiRequests
 {
 
-    protected function setUp(): void
+    protected bool $formatJsonApiDocument = true;
+
+    protected  function setUp(): void
     {
         parent::setUp();
 
         TestResponse::macro('assertJsonApiValidationErrors', $this->assertJsonApiValidationErrors() );
     }
 
+    public function withoutJsonApiDocumentFormatting() {
+        $this->formatJsonApiDocument = false;
+    }
+
     public function json($method, $uri, array $data = [], array $headers = [], $options = 0): \Illuminate\Testing\TestResponse
     {
         $headers['accept'] = 'application/vnd.api+json';
-        return parent::json($method, $uri, $data, $headers, $options);
+
+        if ($this->formatJsonApiDocument){
+
+            $formattedData['data']['attributes'] = $data;
+
+            $formattedData['data']['type'] = (string) Str::of($uri)->after('api/v1/');
+        }
+
+
+
+        return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
     }
 
     public function postJson($uri, array $data = [], array $headers = [], $options = 0): \Illuminate\Testing\TestResponse
