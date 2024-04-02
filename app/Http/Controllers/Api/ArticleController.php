@@ -15,11 +15,28 @@ class ArticleController extends Controller
 {
     public function index(Request $request): ArticleCollection
     {
-        $sortField = $request->input('sort');
-        $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
+        $articles = Article::query();
 
-        $articles = Article::orderBy( ltrim($sortField,'-'), $sortDirection)->get();
-        return ArticleCollection::make($articles);
+        if ($request->filled('sort')) {
+
+            $sortFields = explode(',', $request->input('sort'));
+
+            $allowedSorts = ['title', 'content'];
+
+            foreach ($sortFields as $sortField) {
+
+                $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
+
+                $sortField = ltrim($sortField, '-');
+
+                abort_unless(in_array($sortField, $allowedSorts), 400);
+
+                $articles->orderBy($sortField, $sortDirection);
+            }
+        }
+
+
+        return ArticleCollection::make($articles->get());
     }
 
     public function show(Article $article): ArticleResource
@@ -35,7 +52,7 @@ class ArticleController extends Controller
         return ArticleResource::make($article);
     }
 
-    public function update(Article $article,SaveArticleRequest $request): ArticleResource
+    public function update(Article $article, SaveArticleRequest $request): ArticleResource
     {
         $article->update($request->validated());
 

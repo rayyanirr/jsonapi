@@ -20,7 +20,7 @@ class SortArticlesTest extends TestCase
 
         // /articles?sort=-title
 
-        $url = route('api.v1.articles.index', ['sort'=>'-title']);
+        $url = route('api.v1.articles.index', ['sort' => '-title']);
 
         $this->getJson($url)->assertSeeInOrder([
 
@@ -39,7 +39,7 @@ class SortArticlesTest extends TestCase
 
         // /articles?sort=title
 
-        $url = route('api.v1.articles.index', ['sort'=>'title']);
+        $url = route('api.v1.articles.index', ['sort' => 'title']);
 
         $this->getJson($url)->assertSeeInOrder([
 
@@ -59,7 +59,7 @@ class SortArticlesTest extends TestCase
 
         // /articles?sort=-content
 
-        $url = route('api.v1.articles.index', ['sort'=>'-content']);
+        $url = route('api.v1.articles.index', ['sort' => '-content']);
 
         $this->getJson($url)->assertSeeInOrder([
 
@@ -69,6 +69,7 @@ class SortArticlesTest extends TestCase
 
         ]);
     }
+
     /** @test */
     public function can_sort_articles_by_content(): void
     {
@@ -78,7 +79,7 @@ class SortArticlesTest extends TestCase
 
         // /articles?sort=content
 
-        $url = route('api.v1.articles.index', ['sort'=>'content']);
+        $url = route('api.v1.articles.index', ['sort' => 'content']);
 
         $this->getJson($url)->assertSeeInOrder([
 
@@ -87,5 +88,57 @@ class SortArticlesTest extends TestCase
             'C content',
 
         ]);
+    }
+
+    /** @test */
+    public function can_sort_articles_by_title_and_content(): void
+    {
+        Article::factory()->create(
+            [
+                'title' => 'A title',
+                'content' => 'A content'
+            ]
+        );
+        Article::factory()->create(
+            [
+                'title' => 'B title',
+                'content' => 'B content'
+            ]
+        );
+        Article::factory()->create(
+            [
+                'title' => 'A title',
+                'content' => 'C content'
+            ]
+        );
+
+
+        // /articles?sort=title,-content
+
+        $url = route('api.v1.articles.index', ['sort' => 'title,-content']);
+
+        $this->getJson($url)->assertSeeInOrder([
+
+            'C content',
+            'A content',
+            'B content',
+
+        ]);
+    }
+
+
+
+    /** @test */
+    public function cannot_sort_articles_by_unknown_fields(): void
+    {
+        Article::factory()->count(3)->create();
+
+
+
+        // /articles?sort=unknown
+
+        $url = route('api.v1.articles.index', ['sort' => 'unknown']);
+
+        $this->getJson($url)->assertStatus(400);
     }
 }
