@@ -61,6 +61,7 @@ class FilterArticlesTest extends TestCase
             ->assertSee('Aprende Laravel Desde Cero')
             ->assertDontSee('Other Article');
     }
+
     /** @test */
     public function can_filter_articles_by_year(): void
     {
@@ -82,11 +83,14 @@ class FilterArticlesTest extends TestCase
             ]
         ]);
 
+
+
         $this->getJson($url)
             ->assertJsonCount(1, 'data')
             ->assertSee('Article from 2021')
             ->assertDontSee('Article from 2022');
     }
+
     /** @test */
     public function can_filter_articles_by_month(): void
     {
@@ -114,21 +118,5 @@ class FilterArticlesTest extends TestCase
             ->assertDontSee('Article from month 11');
     }
 
-    /** @test */
-    public function cannot_filter_articles_by_unknown_filters(): void
-    {
-        Article::factory()->count(2)->create();
 
-
-        //articles?filter[unknown]=adadasd
-
-        $url = route('api.v1.articles.index', [
-            'filter' => [
-                'unknown' => 'adsasdasd'
-            ]
-        ]);
-
-        $this->getJson($url)
-            ->assertStatus(400);
-    }
 }

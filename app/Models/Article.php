@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Article extends Model
 {
@@ -41,5 +42,16 @@ class Article extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+
+    public function scopeYear(Builder $query, string $year): void
+    {
+        $query->whereYear('created_at', $year);
+    }
+
+    public function scopeMonth(Builder $query, string $month): void
+    {
+        $query->whereMonth('created_at',$month);
     }
 }
