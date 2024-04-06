@@ -52,4 +52,61 @@ class JsonApiTestResponse
         };
     }
 
+    public function assertJsonApiResource() : Closure {
+
+        return function ($model, $attributes)  {
+            /** @var TestResponse $this */
+            $this->assertJson([
+                'data' => [
+                    'type' => $model->getResourceType(),
+                    'id' => (string)$model->getRouteKey(),
+                    'attributes' => $attributes,
+                    'links' => [
+                        'self' => route('api.v1.'. $model->getResourceType() .'.show', $model),
+
+                    ]
+                ]
+
+            ]);
+
+            $this->assertHeader(
+                'Location',
+                route('api.v1.'.$model->getResourceType().'.show', $model)
+            );
+        };
+    }
+
+    public function assertJsonApiResourceCollection() : Closure {
+
+        return function ($models, $attributesKeys) {
+            /** @var TestResponse $this */
+
+            foreach ($models as $model) {
+
+                $this->assertJsonStructure([
+                    'data' => [
+                        '*' => [
+                            'attributes' => $attributesKeys
+                        ]
+                    ]
+                ]);
+
+                $this->assertJsonFragment([
+                    'type' => $model->getResourceType(),
+                    'id' => (string) $model->getRouteKey(),
+                    'attributes' => [
+                        'title' => $model->title,
+                        'slug' => $model->slug,
+                        'content' => $model->content
+                    ],
+                    'links' => [
+                        'self' => route('api.v1.'.$model->getResourceType().'.show', $model),
+
+                    ]
+                ]);
+            }
+
+        };
+    }
+
 }
