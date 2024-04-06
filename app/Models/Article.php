@@ -29,6 +29,9 @@ class Article extends Model
         'user_id' => 'integer',
     ];
 
+    public $resourceType = 'articles';
+
+
     public function getRouteKeyName()
     {
         return 'slug';
