@@ -28,14 +28,29 @@ class Document extends Collection
         return $this;
     }
 
-    public function links(array $links) : Document {
+    public function links(array $links) : Document
+    {
         $this->items['data']['links'] = $links;
         return $this;
     }
 
-    public function relationships() : Document {
+    public function relationships(array $relationships) : Document
+    {
 
-        //todo
+        foreach ($relationships as $key =>  $relationship) {
+
+            $this->items['data']['relationships'][$key] = [
+                'data' => [
+                    'type' => $relationship->getResourceType(),
+                    'id' => $relationship->getRouteKey()
+
+
+                ]
+            ];
+        }
+
+
+        return $this;
     }
 
 }
