@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\Traits;
 
+use App\JsonApi\Document;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -12,14 +13,13 @@ trait jsonApiResource
 
     public function toArray(Request $request): array
     {
-        return [
-            'type' => $this->getResourceType(),
-            'id' => (string) $this->resource->getRouteKey(),
-            'attributes' => $this->filterAttributes($this->toJsonApi()),
-            'links' => [
-                'self' => route('api.v1.' . $this->getResourceType() . '.show', $this->resource),
-            ]
-        ];
+        return Document::type($this->getResourceType())
+        ->id( $this->resource->getRouteKey())
+        ->attributes($this->filterAttributes($this->toJsonApi()))
+        ->links([
+            'self' => route('api.v1.' . $this->getResourceType() . '.show', $this->resource),
+        ])
+        ->get('data');
     }
 
     public function withResponse(Request $request, JsonResponse $response)
