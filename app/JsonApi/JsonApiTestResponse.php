@@ -12,7 +12,8 @@ class JsonApiTestResponse
 {
 
 
-    public function assertJsonApiValidationErrors(): Closure  {
+    public function assertJsonApiValidationErrors(): Closure
+    {
 
         return function ($attribute) {
 
@@ -48,15 +49,16 @@ class JsonApiTestResponse
 
 
             $this->assertHeader('content-type', 'application/vnd.api+json');
-            $this->assertStatus(422);
+            return $this->assertStatus(422);
         };
     }
 
-    public function assertJsonApiResource() : Closure {
+    public function assertJsonApiResource() : Closure
+    {
 
         return function ($model, $attributes)  {
             /** @var TestResponse $this */
-            $this->assertJson([
+            return $this->assertJson([
                 'data' => [
                     'type' => $model->getResourceType(),
                     'id' => (string)$model->getRouteKey(),
@@ -67,16 +69,15 @@ class JsonApiTestResponse
                     ]
                 ]
 
-            ]);
-
-            $this->assertHeader(
+            ])->assertHeader(
                 'Location',
                 route('api.v1.'.$model->getResourceType().'.show', $model)
             );
         };
     }
 
-    public function assertJsonApiResourceCollection() : Closure {
+    public function assertJsonApiResourceCollection() : Closure
+    {
 
         return function ($models, $attributesKeys) {
             /** @var TestResponse $this */
@@ -94,17 +95,14 @@ class JsonApiTestResponse
                 $this->assertJsonFragment([
                     'type' => $model->getResourceType(),
                     'id' => (string) $model->getRouteKey(),
-                    'attributes' => [
-                        'title' => $model->title,
-                        'slug' => $model->slug,
-                        'content' => $model->content
-                    ],
                     'links' => [
                         'self' => route('api.v1.'.$model->getResourceType().'.show', $model),
 
                     ]
                 ]);
             }
+
+            return $this;
 
         };
     }

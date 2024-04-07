@@ -23,8 +23,15 @@ class Category extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
+        'id' => 'string',
     ];
+
+    public $resourceType = 'categories';
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     public function articles(): HasMany
     {
