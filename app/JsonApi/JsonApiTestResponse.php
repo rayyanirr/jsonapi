@@ -21,13 +21,12 @@ class JsonApiTestResponse
 
             $pointer = "/data/attributes/$attribute";
 
-            if ( Str::of($attribute)->startsWith('data')){
+            if (Str::of($attribute)->startsWith('data')) {
 
                 $pointer =  "/" . str_replace('.', '/', $attribute);
-
             } else if (Str::of($attribute)->startsWith('relationships')) {
 
-                $pointer =  "/data/" . str_replace('.', '/', $attribute).'/data/id';
+                $pointer =  "/data/" . str_replace('.', '/', $attribute) . '/data/id';
             }
 
             try {
@@ -60,10 +59,10 @@ class JsonApiTestResponse
         };
     }
 
-    public function assertJsonApiResource() : Closure
+    public function assertJsonApiResource(): Closure
     {
 
-        return function ($model, $attributes)  {
+        return function ($model, $attributes) {
             /** @var TestResponse $this */
             return $this->assertJson([
                 'data' => [
@@ -71,19 +70,19 @@ class JsonApiTestResponse
                     'id' => (string)$model->getRouteKey(),
                     'attributes' => $attributes,
                     'links' => [
-                        'self' => route('api.v1.'. $model->getResourceType() .'.show', $model),
+                        'self' => route('api.v1.' . $model->getResourceType() . '.show', $model),
 
                     ]
                 ]
 
             ])->assertHeader(
                 'Location',
-                route('api.v1.'.$model->getResourceType().'.show', $model)
+                route('api.v1.' . $model->getResourceType() . '.show', $model)
             );
         };
     }
 
-    public function assertJsonApiResourceCollection() : Closure
+    public function assertJsonApiResourceCollection(): Closure
     {
 
         return function ($models, $attributesKeys) {
@@ -103,15 +102,40 @@ class JsonApiTestResponse
                     'type' => $model->getResourceType(),
                     'id' => (string) $model->getRouteKey(),
                     'links' => [
-                        'self' => route('api.v1.'.$model->getResourceType().'.show', $model),
+                        'self' => route('api.v1.' . $model->getResourceType() . '.show', $model),
 
                     ]
                 ]);
             }
 
             return $this;
-
         };
     }
 
+    public function assertJsonApiRelationshipsLinks(): Closure
+    {
+
+        return function ($model, $relations) {
+            /** @var TestResponse $this */
+
+            foreach ($relations as $relation) {
+
+                $this->assertJson([
+                    'data' => [
+                        'relationships' => [
+                            $relation => [
+                                'links' => [
+                                    'self' => route("api.v1.{$model->getResourceType()}.relationships.{$relation}", $model),
+                                    'related' => route("api.v1.{$model->getResourceType()}.{$relation}", $model),
+                                ]
+                            ]
+                        ]
+                    ]
+                ]);
+            }
+
+
+            return $this;
+        };
+    }
 }
