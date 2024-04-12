@@ -20,8 +20,10 @@ class Document extends Collection
     {
         if ($id) {
             $this->items['data']['id'] = (string)$id;
-            return $this;
+
         }
+
+        return $this;
     }
 
     public function attributes(array $attributes): Document

@@ -157,4 +157,37 @@ class CreateArticleTest extends TestCase
 
         $response->assertJsonApiValidationErrors('content');
     }
+
+
+    /** @test */
+    public function category_relations_is_required()
+    {
+        $response = $this->postJson(route('api.v1.articles.store'), [
+
+            'title' => 'nuevo articulo',
+            'slug' => 'nuevo-articulo',
+            'content' => 'contenido del articulo',
+
+        ]);
+
+        $response->assertJsonApiValidationErrors('data.relationships.category.data.id');
+    }
+
+
+    /** @test */
+    public function category_must_exists_in_database()
+    {
+
+        $response = $this->postJson(route('api.v1.articles.store'), [
+
+            'title' => 'nuevo articulo',
+            'slug' => 'nuevo-articulo',
+            'content' => 'contenido del articulo',
+            '_relationships' => [
+                'category' => Category::factory()->make()
+            ]
+        ]);
+
+        $response->assertJsonApiValidationErrors('relationships.category');
+    }
 }
