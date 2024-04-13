@@ -27,7 +27,7 @@ class ArticleResource extends JsonResource
 
         return [
 
-            CategoryResource::make($this->resource->category)
+            CategoryResource::make($this->whenLoaded('category'))
 
         ];
     }

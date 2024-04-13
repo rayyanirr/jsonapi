@@ -41,8 +41,8 @@ class IncludeCategoryTest extends TestCase
     /** @test */
     public function can_include_related_categories_of_multiple_article(): void
     {
-        $article = Article::factory()->create();
-        $article1 = Article::factory()->create();
+        $article = Article::factory()->create()->load('category');
+        $article1 = Article::factory()->create()->load('category');
 
         $url = route('api.v1.articles.index',[
 
