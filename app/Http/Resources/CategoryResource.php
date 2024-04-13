@@ -13,7 +13,7 @@ class CategoryResource extends JsonResource
     {
         return [
             'name' => $this->resource->name,
-            'slug' => $this->resource->slug,
+            //'slug' => $this->resource->slug,
         ];
     }
 }
