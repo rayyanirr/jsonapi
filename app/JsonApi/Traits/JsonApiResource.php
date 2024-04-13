@@ -61,11 +61,23 @@ trait jsonApiResource
         });
     }
 
-    public static function collection($resource): AnonymousResourceCollection
+    public static function collection($resources): AnonymousResourceCollection
     {
-        $collection = parent::collection($resource);
+        $collection = parent::collection($resources);
 
-        $collection->with['links'] = ['self' => $resource->path()];
+        if (request()->filled('include')) {
+
+            foreach ($resources as $resource) {
+
+                foreach ($resource->getIncludes() as $include){
+
+                    $collection->with['included'][] = $include;
+                }
+            }
+        }
+
+
+        $collection->with['links'] = ['self' => $resources->path()];
 
         return $collection;
     }

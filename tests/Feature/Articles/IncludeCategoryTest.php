@@ -37,4 +37,39 @@ class IncludeCategoryTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function can_include_related_categories_of_multiple_article(): void
+    {
+        $article = Article::factory()->create();
+        $article1 = Article::factory()->create();
+
+        $url = route('api.v1.articles.index',[
+
+            'include' => 'category'
+
+        ]);
+
+        $this->getJson($url)->assertJson([
+
+            'included' => [
+                [
+                    'type' => 'categories',
+                    'id' => $article->category->getRouteKey(),
+                    'attributes' => [
+                        'name' => $article->category->name,
+                    ],
+
+                ],
+                [
+                    'type' => 'categories',
+                    'id' => $article1->category->getRouteKey(),
+                    'attributes' => [
+                        'name' => $article1->category->name,
+                    ],
+
+                ],
+            ]
+        ]);
+    }
 }
