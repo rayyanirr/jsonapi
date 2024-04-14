@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Illuminate\Support\Str;
 
 class listAuthorsTest extends TestCase
 {
@@ -22,6 +23,11 @@ class listAuthorsTest extends TestCase
         $response->assertJsonApiResource($author,[
             'name' => $author->name
         ]);
+
+        $this->assertTrue(
+            Str::isUuid($response->json('data.id')),
+            "The authors 'id' must be UUID. "
+        );
     }
 
     /** @test */
