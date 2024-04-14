@@ -11,6 +11,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    public $resourceType = 'authors';
+
     /**
      * The attributes that are mass assignable.
      *
