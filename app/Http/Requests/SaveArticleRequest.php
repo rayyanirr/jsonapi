@@ -36,9 +36,10 @@ class SaveArticleRequest extends FormRequest
             'data.attributes.content' => ['required'],
 
             'data.relationships.category.data.id' => [
-                Rule::requiredIf(! $this->route('article')),
-                Rule::exists('categories','slug'),
-            ]
+                Rule::requiredIf(!$this->route('article')),
+                Rule::exists('categories', 'slug'),
+            ],
+            'data.relationships.author' => []
         ];
     }
 
@@ -47,20 +48,34 @@ class SaveArticleRequest extends FormRequest
         $data = parent::validated()['data'];
         $attributes = $data['attributes'];
 
-        if (isset($data['relationships']))
-        {
-
+        if (isset($data['relationships'])) {
             $relationships = $data['relationships'];
 
-            $categorySlug = $relationships['category']['data']['id'];
+            foreach ($relationships as $key => $relationship) {
+                $attributes =  array_merge($attributes, $this->{$key}($relationship));
+            }
 
-            $category = Category::where('slug', $categorySlug)->first();
-
-            $attributes['category_id'] = $category->id;
         }
 
 
 
         return $attributes;
+    }
+
+    public function category($relationship): array
+    {
+
+        $categorySlug = $relationship['data']['id'];
+        $category = Category::where('slug', $categorySlug)->first();
+
+
+        return ['category_id' => $category->id];
+    }
+
+    public function author($relationship)
+    {
+        $userUuid = $relationship['data']['id'];
+
+        return ['user_id' => $userUuid];
     }
 }

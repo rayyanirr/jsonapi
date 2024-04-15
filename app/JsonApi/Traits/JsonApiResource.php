@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
 
-trait jsonApiResource
+trait JsonApiResource
 {
     abstract public  function toJsonApi(): array;
 
