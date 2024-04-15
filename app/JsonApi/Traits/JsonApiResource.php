@@ -16,14 +16,13 @@ trait JsonApiResource
     {
         if ($request->filled('include')) {
 
-            foreach ($this->getIncludes() as $include){
+            foreach ($this->getIncludes() as $include) {
 
                 if ($include->resource instanceof MissingValue) {
 
                     continue;
                 }
                 $this->with['included'][] = $include;
-
             }
         }
 
@@ -77,14 +76,13 @@ trait JsonApiResource
 
             foreach ($resources as $resource) {
 
-                foreach ($resource->getIncludes() as $include){
+                foreach ($resource->getIncludes() as $include) {
 
                     if ($include->resource instanceof MissingValue) {
 
                         continue;
                     }
                     $collection->with['included'][] = $include;
-
                 }
             }
         }
@@ -93,5 +91,13 @@ trait JsonApiResource
         $collection->with['links'] = ['self' => $resources->path()];
 
         return $collection;
+    }
+
+    public static function identifier($resource): array
+    {
+        return Document::type($resource->getResourceType())
+            ->id(
+                $resource->getRouteKey()
+            )->toArray();
     }
 }
