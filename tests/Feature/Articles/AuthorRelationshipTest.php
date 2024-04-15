@@ -3,6 +3,7 @@
 namespace Tests\Feature\Articles;
 
 use App\Models\Article;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -49,4 +50,38 @@ class AuthorRelationshipTest extends TestCase
              ]
          ]);
      }
+
+
+       /** @test */
+    public function can_update_the_associated_author(): void
+    {
+        $article = Article::factory()->create();
+        $author = User::factory()->create();
+
+        $url = route('api.v1.articles.relationships.author.update', $article);
+
+        $this->withoutJsonApiDocumentFormatting();
+
+        $response = $this->patchJson($url, [
+            'data' => [
+                'type' => 'categories',
+                'id' => $author->getRouteKey()
+            ]
+        ]);
+
+        $response->assertExactJson([
+
+            'data' => [
+                'type' => 'authors',
+                'id' => $author->getRouteKey()
+            ]
+        ]);
+
+        $this->assertDatabaseHas('articles',[
+
+            'title' => $article->title,
+            'user_id' => $author->id
+        ]);
+
+    }
 }

@@ -12,8 +12,10 @@ Route::apiResource('categories', CategoryController::class)->only('index', 'show
 Route::apiResource('authors', AuthorController::class)->only('index', 'show');
 
 Route::get('articles/{article}/relationships/category', [ArticleCategoryController::class,'index'])->name('articles.relationships.category');
+Route::patch('articles/{article}/relationships/category', [ArticleCategoryController::class,'update'])->name('articles.relationships.category.update');
 Route::get('articles/{article}/category', [ArticleCategoryController::class,'show'])->name('articles.category');
 
 Route::get('articles/{article}/relationships/author', [ArticleAuthorController::class, 'index'])->name('articles.relationships.author');
+Route::patch('articles/{article}/relationships/author', [ArticleAuthorController::class, 'update'])->name('articles.relationships.author.update');
 Route::get('articles/{article}/author', [ArticleAuthorController::class, 'show'])->name('articles.author');
 
