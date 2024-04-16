@@ -18,13 +18,11 @@ class ListArticlesTest extends TestCase
 
         $response = $this->getJson(route('api.v1.articles.show', $article));
 
-        $response->assertJsonApiResource($article,[
+        $response->assertJsonApiResource($article, [
             'title' => $article->title,
             'slug' => $article->slug,
             'content' => $article->content
-        ])->assertJsonApiRelationshipsLinks($article, ['category','author']);
-
-
+        ])->assertJsonApiRelationshipsLinks($article, ['category', 'author']);
     }
 
     /** @test */
@@ -37,27 +35,20 @@ class ListArticlesTest extends TestCase
         $response =  $this->getJson(route('api.v1.articles.index'));
 
         $response->assertJsonApiResourceCollection($articles, [
-            'title','slug','content'
+            'title', 'slug', 'content'
         ]);
     }
 
-     /** @test */
-     public function it_returns_a_json_api_error_object_when_an_article_is_not_found()
-     {
+    /** @test */
+    public function it_returns_a_json_api_error_object_when_an_article_is_not_found()
+    {
 
-         $response = $this->getJson(route('api.v1.articles.show', 'not-existing'));
+        $response = $this->getJson(route('api.v1.articles.show', 'not-existing'));
 
-         $response->assertJsonStructure([
-            'errors' => [
-                '*' => []
-            ]
-         ])->assertJsonFragment([
-            'title' => 'Not Found',
-            'detail' => "No records found with the id 'not-existing' in the 'articles' resource",
-            'status' => '404'
-         ])->assertStatus(404);
-
-
-     }
-
+        $response->assertJSonApiErrors(
+            title: 'Not Found',
+            detail: "No records found with the id 'not-existing' in the 'articles' resource.",
+            status: "404"
+        );
+    }
 }

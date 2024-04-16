@@ -39,7 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json([
                 'errors' => [
                     'title' => 'Not Found',
-                    'detail' => "No records found with the id '{$id}' in the '{$type}' resource",
+                    'detail' => "No records found with the id '{$id}' in the '{$type}' resource.",
                     'status' => '404'
                 ]
             ], 404);
