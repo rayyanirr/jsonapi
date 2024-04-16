@@ -52,7 +52,7 @@ class AuthorRelationshipTest extends TestCase
      }
 
 
-       /** @test */
+    /** @test */
     public function can_update_the_associated_author(): void
     {
         $article = Article::factory()->create();
@@ -81,6 +81,34 @@ class AuthorRelationshipTest extends TestCase
 
             'title' => $article->title,
             'user_id' => $author->id
+        ]);
+
+    }
+
+
+    /** @test */
+    public function author_must_exist_in_database(): void
+    {
+        $article = Article::factory()->create();
+
+
+        $url = route('api.v1.articles.relationships.author.update', $article);
+
+        $this->withoutJsonApiDocumentFormatting();
+
+        $this->patchJson($url, [
+            'data' => [
+                'type' => 'authors',
+                'id' =>'non-existing'
+            ]
+        ])->assertJsonApiValidationErrors('data.id');
+
+
+
+        $this->assertDatabaseHas('articles',[
+
+            'title' => $article->title,
+            'user_id' => $article->user_id
         ]);
 
     }
