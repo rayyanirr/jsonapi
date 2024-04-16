@@ -1,12 +1,13 @@
 <?php
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Http\Responses\JsonApiValidationErrorResponse;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Configuration\Exceptions;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Middleware\ValidateJsonApiHeaders;
-use App\Http\Responses\JsonApiValidationErrorResponse;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -29,6 +30,21 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+
+        $exceptions->renderable(function (NotFoundHttpException $e, $request) {
+
+            $id = $request->input('data.id');
+            $type = $request->input('data.type');
+
+            return response()->json([
+                'errors' => [
+                    'title' => 'Not Found',
+                    'detail' => "No records found with the id '{$id}' in the '{$type}' resource",
+                    'status' => '404'
+                ]
+            ], 404);
+
+        });
 
         $exceptions->render(function (ValidationException $e) {
 
