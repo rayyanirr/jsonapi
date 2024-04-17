@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\JsonApi\NotFoundHttpException as JsonApiNotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Responses\JsonApiValidationErrorResponse;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -31,24 +32,13 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        $exceptions->renderable(function (NotFoundHttpException $e, $request) {
+        $exceptions->renderable(function (NotFoundHttpException $e) {
 
-            $id = $request->input('data.id');
-            $type = $request->input('data.type');
-
-            return response()->json([
-                'errors' => [
-                    'title' => 'Not Found',
-                    'detail' => "No records found with the id '{$id}' in the '{$type}' resource.",
-                    'status' => '404'
-                ]
-            ], 404);
-
+           throw new JsonApiNotFoundHttpException();
         });
 
         $exceptions->render(function (ValidationException $e) {
 
             return new JsonApiValidationErrorResponse($e);
-
         });
     })->create();
