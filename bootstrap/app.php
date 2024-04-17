@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\JsonApi\BadRequestHttpException as JsonApiBadRequestHttpException;
 use App\Exceptions\JsonApi\NotFoundHttpException as JsonApiNotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Responses\JsonApiValidationErrorResponse;
@@ -10,6 +11,7 @@ use App\Http\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -35,6 +37,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->renderable(function (NotFoundHttpException $e) {
 
            throw new JsonApiNotFoundHttpException();
+        });
+
+        $exceptions->renderable(function (BadRequestHttpException $e) {
+
+           throw new JsonApiBadRequestHttpException($e->getMessage());
         });
 
         $exceptions->render(function (ValidationException $e) {

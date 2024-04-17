@@ -143,4 +143,23 @@ class FilterArticlesTest extends TestCase
     }
 
 
+    /** @test */
+    public function cannot_filter_articles_by_unknown_fields(): void
+    {
+        Article::factory()->count(3)->create();
+
+
+
+        // /articles?filter=unknown
+
+        $url = route('api.v1.articles.index', ['filter' => ['unknown' => 'unknown' ]]);
+
+        $this->getJson($url)->assertJSonApiErrors(
+            title: "Bad Request",
+            detail: "the filter field 'unknown' is not allowed in the 'articles' resource",
+            status: "400"
+        );
+    }
+
+
 }
