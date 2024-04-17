@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\ArticleCategoryController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthorController;
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Middleware\ValidateJsonApiDocument;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('articles', ArticleController::class);
@@ -18,4 +20,6 @@ Route::get('articles/{article}/category', [ArticleCategoryController::class,'sho
 Route::get('articles/{article}/relationships/author', [ArticleAuthorController::class, 'index'])->name('articles.relationships.author');
 Route::patch('articles/{article}/relationships/author', [ArticleAuthorController::class, 'update'])->name('articles.relationships.author.update');
 Route::get('articles/{article}/author', [ArticleAuthorController::class, 'show'])->name('articles.author');
+
+Route::withoutMiddleware(ValidateJsonApiDocument::class)->post('login', LoginController::class)->name('login');
 
