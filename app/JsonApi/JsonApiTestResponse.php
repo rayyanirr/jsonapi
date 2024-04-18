@@ -140,7 +140,7 @@ class JsonApiTestResponse
         };
     }
 
-    public function assertJSonApiErrors(): Closure
+    public function assertJsonApiError(): Closure
     {
 
         return function ($title = null, $detail = null, $status = null) {

@@ -4,6 +4,7 @@ namespace Tests\Feature\Articles;
 
 use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class DeleteArticleTest extends TestCase
@@ -16,9 +17,21 @@ class DeleteArticleTest extends TestCase
     {
         $article = Article::factory()->create();
 
+        Sanctum::actingAs($article->author);
+
         $this->deleteJson(route('api.v1.articles.destroy', $article))
         ->assertNoContent();
 
         $this->assertDatabaseCount('articles', 0);
     }
+
+     /** @test */
+     public function guests_cannot_delete_articles(): void
+     {
+         $article = Article::factory()->create();
+
+         $this->deleteJson(route('api.v1.articles.destroy', $article))
+         ->assertUnauthorized();
+
+     }
 }

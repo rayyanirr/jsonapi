@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class CreateArticleTest extends TestCase
@@ -17,6 +18,8 @@ class CreateArticleTest extends TestCase
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
+
+        Sanctum::actingAs($user);
 
         $response = $this->postJson(route('api.v1.articles.store'), [
 
@@ -61,9 +64,11 @@ class CreateArticleTest extends TestCase
 
         ]);
     }
+
     /** @test */
     public function title_is_required()
     {
+        Sanctum::actingAs(User::factory()->create());
         $response = $this->postJson(route('api.v1.articles.store'), [
 
             'slug' => 'nuevo-articulo',
@@ -77,6 +82,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function slug_is_required()
     {
+        Sanctum::actingAs(User::factory()->create());
         $response = $this->postJson(route('api.v1.articles.store'), [
 
             'title' => 'nulll',
@@ -90,6 +96,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function slug_must_be_unique()
     {
+        Sanctum::actingAs(User::factory()->create());
         $article = Article::factory()->create();
 
         $response = $this->postJson(route('api.v1.articles.store'), [
@@ -105,7 +112,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function slug_must_only_contain_letters_numbers_and_dashes()
     {
-
+        Sanctum::actingAs(User::factory()->create());
 
         $response = $this->postJson(route('api.v1.articles.store'), [
             'slug' => '$%~&',
@@ -120,6 +127,7 @@ class CreateArticleTest extends TestCase
      /** @test */
      public function slug_must_not_contain_underscores()
      {
+        Sanctum::actingAs(User::factory()->create());
           $this->postJson(route('api.v1.articles.store'), [
              'slug' => 'prueba_a',
              'title' => 'nulll',
@@ -132,6 +140,7 @@ class CreateArticleTest extends TestCase
      /** @test */
      public function slug_must_not_start_with_dashes()
      {
+        Sanctum::actingAs(User::factory()->create());
          $response = $this->postJson(route('api.v1.articles.store'), [
              'slug' => '-pruebaa',
              'title' => 'nulll',
@@ -144,6 +153,7 @@ class CreateArticleTest extends TestCase
      /** @test */
      public function slug_must_not_end_with_dashes()
      {
+        Sanctum::actingAs(User::factory()->create());
          $response = $this->postJson(route('api.v1.articles.store'), [
              'slug' => 'pruebaa-',
              'title' => 'nulll',
@@ -156,6 +166,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function content_is_required()
     {
+        Sanctum::actingAs(User::factory()->create());
         $response = $this->postJson(route('api.v1.articles.store'), [
 
             'title' => 'nuevo articulo',
@@ -171,6 +182,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function category_relations_is_required()
     {
+        Sanctum::actingAs(User::factory()->create());
         $response = $this->postJson(route('api.v1.articles.store'), [
 
             'title' => 'nuevo articulo',
@@ -186,7 +198,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function category_must_exists_in_database()
     {
-
+        Sanctum::actingAs(User::factory()->create());
         $response = $this->postJson(route('api.v1.articles.store'), [
 
             'title' => 'nuevo articulo',
@@ -198,5 +210,30 @@ class CreateArticleTest extends TestCase
         ]);
 
         $response->assertJsonApiValidationErrors('relationships.category');
+    }
+
+    /** @test */
+    public function guests_cannot_create_articles()
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+
+        $response = $this->postJson(route('api.v1.articles.store'), [
+
+            'title' => 'Nuevo Articulo',
+            'slug' => 'nuevo-articulo',
+            'content' => 'contenido del articulo',
+            '_relationships' => [
+                'category' => $category,
+                'author' => $user
+            ]
+        ]);
+
+        $response->assertUnauthorized();
+
+        //$response->assertJsonApiError();
+
+        $this->assertDatabaseCount('articles',0);
+
     }
 }

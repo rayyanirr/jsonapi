@@ -45,7 +45,7 @@ class ListArticlesTest extends TestCase
 
         $response = $this->getJson(route('api.v1.articles.show', 'not-existing'));
 
-        $response->assertJSonApiErrors(
+        $response->assertJsonApiError(
             title: 'Not Found',
             detail: "No records found with the id 'not-existing' in the 'articles' resource.",
             status: "404"

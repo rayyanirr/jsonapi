@@ -13,10 +13,18 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ArticleController extends Controller
 {
+    public function __construct()
+    {
+
+        $this->middleware('auth:sanctum', [
+            'only' => ['store','update','destroy']
+        ]);
+    }
+
     public function show($article): JsonResource
     {
         $article = Article::where('slug', $article)
-            ->allowedIncludes(['category','author'])
+            ->allowedIncludes(['category', 'author'])
             ->sparseFieldset()
             ->firstOrFail();
 
@@ -27,7 +35,7 @@ class ArticleController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $articles = Article::query()
-            ->allowedIncludes(['category','author'])
+            ->allowedIncludes(['category', 'author'])
             ->allowedFilters(['title', 'content', 'month', 'year', 'categories'])
             ->allowedSorts(['title', 'content'])
             ->sparseFieldset()
@@ -39,6 +47,8 @@ class ArticleController extends Controller
 
     public function store(SaveArticleRequest $request): ArticleResource
     {
+
+
         $article = Article::create($request->validated());
 
         return ArticleResource::make($article);

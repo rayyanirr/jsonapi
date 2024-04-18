@@ -148,13 +148,11 @@ class FilterArticlesTest extends TestCase
     {
         Article::factory()->count(3)->create();
 
-
-
         // /articles?filter=unknown
 
         $url = route('api.v1.articles.index', ['filter' => ['unknown' => 'unknown' ]]);
 
-        $this->getJson($url)->assertJSonApiErrors(
+        $this->getJson($url)->assertJsonApiError(
             title: "Bad Request",
             detail: "the filter field 'unknown' is not allowed in the 'articles' resource",
             status: "400"

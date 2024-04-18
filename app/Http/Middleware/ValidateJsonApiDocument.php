@@ -13,9 +13,6 @@ class ValidateJsonApiDocument
     public function handle(Request $request, Closure $next): Response
     {
 
-
-
-
         if ($request->isMethod('POST') || $request->isMethod('PATCH')) {
 
             $request->validate([
