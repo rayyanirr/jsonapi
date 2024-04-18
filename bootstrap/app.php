@@ -2,6 +2,7 @@
 
 use App\Exceptions\JsonApi\BadRequestHttpException as JsonApiBadRequestHttpException;
 use App\Exceptions\JsonApi\NotFoundHttpException as JsonApiNotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Responses\JsonApiValidationErrorResponse;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,7 +12,7 @@ use App\Http\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -44,8 +45,13 @@ return Application::configure(basePath: dirname(__DIR__))
            throw new JsonApiBadRequestHttpException($e->getMessage());
         });
 
-        $exceptions->render(function (ValidationException $e) {
+        $exceptions->render(function (ValidationException $e, Request $request) {
 
-            return new JsonApiValidationErrorResponse($e);
+            if ( ! $request->routeIs('api.v1.login') ) {
+                return new JsonApiValidationErrorResponse($e);
+            }
+
+            return false;
+
         });
     })->create();
