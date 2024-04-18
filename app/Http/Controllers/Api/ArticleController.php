@@ -9,16 +9,19 @@ use App\Http\Resources\ArticleResource;
 use App\Http\Requests\SaveArticleRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
 
-class ArticleController extends Controller
+class ArticleController extends Controller implements HasMiddleware
 {
-    public function __construct()
-    {
 
-        $this->middleware('auth:sanctum', [
-            'only' => ['store','update','destroy']
-        ]);
+
+    public static function middleware()
+    {
+        return [
+            (new Middleware('auth:sanctum'))->only('store', 'update', 'destroy'),
+        ];
     }
 
     public function show($article): JsonResource

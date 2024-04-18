@@ -215,6 +215,7 @@ class CreateArticleTest extends TestCase
     /** @test */
     public function guests_cannot_create_articles()
     {
+
         $user = User::factory()->create();
         $category = Category::factory()->create();
 
@@ -229,9 +230,14 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertUnauthorized();
+        //$response->dump()->assertUnauthorized();
 
-        //$response->assertJsonApiError();
+
+        $response->assertJsonApiError(
+            title: 'Unauthenticated',
+            detail : 'This action required authentication.',
+            status : '401'
+        );
 
         $this->assertDatabaseCount('articles',0);
 
