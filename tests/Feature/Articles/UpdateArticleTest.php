@@ -157,7 +157,12 @@ class UpdateArticleTest extends TestCase
             'content' => 'Update Content'
         ]);
 
-        $response->assertUnauthorized();
+
+        $response->assertJsonApiError(
+            title: 'Unauthenticated',
+            detail : 'This action required authentication.',
+            status : '401'
+        );
 
         //$response->assertJsonApiError();
 
