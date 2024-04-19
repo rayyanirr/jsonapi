@@ -7,11 +7,12 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Http\Requests\SaveArticleRequest;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class ArticleController extends Controller implements HasMiddleware
 {
@@ -52,6 +53,7 @@ class ArticleController extends Controller implements HasMiddleware
     {
 
 
+
         $article = Article::create($request->validated());
 
         return ArticleResource::make($article);
@@ -59,13 +61,16 @@ class ArticleController extends Controller implements HasMiddleware
 
     public function update(Article $article, SaveArticleRequest $request): ArticleResource
     {
+        $this->authorize('update', $article);
+
         $article->update($request->validated());
 
         return ArticleResource::make($article);
     }
 
-    public function destroy(Article $article): Response
+    public function destroy(Article $article, Request $request): Response
     {
+        $this->authorize('delete', $article);
 
         $article->delete();
 

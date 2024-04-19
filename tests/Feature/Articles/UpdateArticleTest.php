@@ -3,6 +3,7 @@
 namespace Tests\Feature\Articles;
 
 use App\Models\Article;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -13,7 +14,7 @@ class UpdateArticleTest extends TestCase
 
 
     /** @test */
-    public function can_update_articles()
+    public function can_update_owned_articles()
     {
         $article = Article::factory()->create();
 
@@ -149,22 +150,33 @@ class UpdateArticleTest extends TestCase
     public function guests_cannot_update_articles()
     {
         $article = Article::factory()->create();
-
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
-
             'title' => 'Update Articulo',
             'slug' => $article->slug,
             'content' => 'Update Content'
         ]);
-
-
         $response->assertJsonApiError(
             title: 'Unauthenticated',
             detail : 'This action required authentication.',
             status : '401'
         );
 
-        //$response->assertJsonApiError();
+    }
+
+
+    /** @test */
+    public function cannot_update_articles_owned_by_other_users()
+    {
+        $article = Article::factory()->create();
+
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->patchJson(route('api.v1.articles.update', $article), [
+
+            'title' => 'Update Articulo',
+            'slug' => $article->slug,
+            'content' => 'Update Content'
+        ])->assertForbidden();
 
 
     }
