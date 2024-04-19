@@ -51,8 +51,7 @@ class ArticleController extends Controller implements HasMiddleware
 
     public function store(SaveArticleRequest $request): ArticleResource
     {
-
-
+        $this->authorize('create', Article::class);
 
         $article = Article::create($request->validated());
 

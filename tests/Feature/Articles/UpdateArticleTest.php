@@ -18,7 +18,7 @@ class UpdateArticleTest extends TestCase
     {
         $article = Article::factory()->create();
 
-        Sanctum::actingAs($article->author);
+        Sanctum::actingAs($article->author, ['article:update']);
 
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
 
@@ -169,7 +169,7 @@ class UpdateArticleTest extends TestCase
     {
         $article = Article::factory()->create();
 
-        Sanctum::actingAs(User::factory()->create());
+        Sanctum::actingAs(User::factory()->create(), ['article:update']);
 
         $this->patchJson(route('api.v1.articles.update', $article), [
 
