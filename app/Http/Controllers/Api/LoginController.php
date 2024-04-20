@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Responses\TokenResponse;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Routing\Controllers\Middleware;
+use App\Http\Responses\TokenResponse;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
+use App\Models\User;
 
-class LoginController extends Controller
+class LoginController extends Controller implements HasMiddleware
 {
+
+    public static function middleware()
+    {
+        return [
+            (new Middleware('guest:sanctum'))
+        ];
+    }
+
     /**
      * Handle the incoming request.
      */

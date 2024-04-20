@@ -3,6 +3,7 @@
 use App\Exceptions\JsonApi\AuthenticationException;
 use App\Exceptions\JsonApi\BadRequestHttpException as JsonApiBadRequestHttpException;
 use App\Exceptions\JsonApi\NotFoundHttpException as JsonApiNotFoundHttpException;
+use App\Http\Middleware\RedirectUsersIfAutenticatedMiddleware;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Responses\JsonApiValidationErrorResponse;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Auth\AuthenticationException as AuthAuthenticationException;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +31,11 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
+
+        $middleware->alias([
+            'guest' => RedirectUsersIfAutenticatedMiddleware::class
+        ]);
+
 
         $middleware->api(append: [
             ValidateJsonApiHeaders::class,

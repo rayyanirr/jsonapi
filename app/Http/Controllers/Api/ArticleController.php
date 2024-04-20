@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Article;
-use Illuminate\Http\Response;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\ArticleResource;
-use App\Http\Requests\SaveArticleRequest;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Controllers\Middleware;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use App\Http\Requests\SaveArticleRequest;
+use App\Http\Resources\ArticleResource;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
+use App\Models\Article;
+
 
 class ArticleController extends Controller implements HasMiddleware
 {

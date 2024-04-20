@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Auth;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Permission;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
 
-class AccessTokenTest extends TestCase
+class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -114,17 +113,6 @@ class AccessTokenTest extends TestCase
        $response->assertJsonValidationErrors(['device_name' => 'required']);
     }
 
-    protected function validCredentials(mixed $overrides = []): array
-    {
-        return  array_merge([
-                'email' => 'rayyanir@example.com',
-                'password' => 'password',
-                'device_name' => 'My device',
-        ], $overrides);
-
-    }
-
-
     /** @test */
     public function user_perrmissions_are_assigned_as_abilities_to_the_token(): void
     {
@@ -155,4 +143,30 @@ class AccessTokenTest extends TestCase
 
 
     }
+
+      /** @test */
+      public function only_one_access_token_can_be_issued_at_a_time(): void
+      {
+          $user = User::factory()->create();
+
+          $accessToken = $user->createToken($user->name)->plainTextToken;
+
+          $this->withHeader('Authorization', "Bearer $accessToken")
+                  ->postJson(route('api.v1.login'))
+                  ->assertNoContent();
+
+           $this->assertCount(1, $user->tokens);
+      }
+
+    protected function validCredentials(mixed $overrides = []): array
+    {
+        return  array_merge([
+                'email' => 'rayyanir@example.com',
+                'password' => 'password',
+                'device_name' => 'My device',
+        ], $overrides);
+
+    }
+
+
 }
