@@ -64,7 +64,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (ValidationException $e, Request $request) {
 
-            if ( ! $request->routeIs('api.v1.login') ) {
+            if ( ! $request->routeIs('api.v1.login') && ! $request->routeIs('api.v1.register')) {
                 return new JsonApiValidationErrorResponse($e);
             }
 

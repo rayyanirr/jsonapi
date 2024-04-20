@@ -32,7 +32,6 @@ class LoginTest extends TestCase
 
         $this->assertTrue($dbToken->tokenable->is($user));
 
-        //dd($dbToken->tokenable->toArray());
     }
 
     /** @test */
