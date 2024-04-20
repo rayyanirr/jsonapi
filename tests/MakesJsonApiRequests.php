@@ -11,33 +11,53 @@ trait MakesJsonApiRequests
 {
 
     protected bool $formatJsonApiDocument = true;
+    protected bool $addJsonHeaders = true;
 
 
-    public function withoutJsonApiDocumentFormatting()
+    public function withoutJsonApiDocumentFormatting(): self
     {
         $this->formatJsonApiDocument = false;
+
+        return $this;
+    }
+
+
+    public function withoutJsonApiHeaders(): self
+    {
+        $this->addJsonHeaders = false;
+
+        return $this;
+    }
+
+    public function withoutJsonApiHelpers() : self {
+
+        $this->formatJsonApiDocument = true;
+        $this->addJsonHeaders = true;
+
+        return $this;
     }
 
     public function json($method, $uri, array $data = [], array $headers = [], $options = 0): TestResponse
     {
-        $headers['accept'] = 'application/vnd.api+json';
+
+        if ($this->addJsonHeaders) {
+
+            $headers['accept'] = 'application/vnd.api+json';
+
+            if ($method === 'POST' || $method === 'PATCH') {
+                $headers['content-type'] = 'application/vnd.api+json';
+            }
+        }
+
 
         if ($this->formatJsonApiDocument) {
-            $formattedData =  $this->getFormattedData($uri, $data);
+
+            if (!isset($data['data'])) {
+
+                $formattedData =  $this->getFormattedData($uri, $data);
+            }
         }
         return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
-    }
-
-    public function postJson($uri, array $data = [], array $headers = [], $options = 0): TestResponse
-    {
-        $headers['content-type'] = 'application/vnd.api+json';
-        return parent::postJson($uri, $data, $headers, $options);
-    }
-
-    public function patchJson($uri, array $data = [], array $headers = [], $options = 0): TestResponse
-    {
-        $headers['content-type'] = 'application/vnd.api+json';
-        return parent::patchJson($uri, $data, $headers, $options);
     }
 
     protected function getFormattedData($uri, array $data): array

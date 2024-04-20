@@ -39,6 +39,8 @@ class LoginTest extends TestCase
     {
         $this->withoutJsonApiDocumentFormatting();
 
+        $this->withoutJsonApiHeaders();
+
         $user = User::factory()->create();
 
         $data = $this->validCredentials([
@@ -48,13 +50,15 @@ class LoginTest extends TestCase
 
         $response = $this->postJson(route('api.v1.login'), $data);
 
-       $response->assertJsonValidationErrorFor('email');
+        $response->assertJsonValidationErrorFor('email');
     }
 
     /** @test */
     public function user_must_be_registered(): void
     {
         $this->withoutJsonApiDocumentFormatting();
+
+        $this->withoutJsonApiHeaders();
 
         $data = $this->validCredentials();
 
@@ -67,6 +71,7 @@ class LoginTest extends TestCase
     public function email_is_required(): void
     {
         $this->withoutJsonApiDocumentFormatting();
+        $this->withoutJsonApiHeaders();
 
         $data = $this->validCredentials(['email' => null]);
 
@@ -79,6 +84,7 @@ class LoginTest extends TestCase
     public function email_must_be_valid(): void
     {
         $this->withoutJsonApiDocumentFormatting();
+        $this->withoutJsonApiHeaders();
 
         $data = $this->validCredentials(['email' => 'invalid']);
 
@@ -93,6 +99,8 @@ class LoginTest extends TestCase
     {
         $this->withoutJsonApiDocumentFormatting();
 
+        $this->withoutJsonApiHeaders();
+
         $data = $this->validCredentials(['password' => null]);
 
         $response = $this->postJson(route('api.v1.login'), $data);
@@ -104,6 +112,7 @@ class LoginTest extends TestCase
     public function device_name_is_required(): void
     {
         $this->withoutJsonApiDocumentFormatting();
+        $this->withoutJsonApiHeaders();
 
         $data = $this->validCredentials(['device_name' => null]);
 

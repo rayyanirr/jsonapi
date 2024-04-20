@@ -52,6 +52,8 @@ class RegisterTest extends TestCase
     /** @test */
     public function name_in_register_is_required(): void
     {
+        $this->withoutJsonApiHeaders();
+
         $data = $this->validCredentials(['name' => '']);
 
         $response = $this->postJson(route('api.v1.register'), $data);
@@ -63,6 +65,8 @@ class RegisterTest extends TestCase
     /** @test */
     public function email_in_register_is_required(): void
     {
+        $this->withoutJsonApiHeaders();
+
         $data = $this->validCredentials(['email' => '']);
 
         $response = $this->postJson(route('api.v1.register'), $data);
@@ -74,6 +78,8 @@ class RegisterTest extends TestCase
     /** @test */
     public function email_in_register_must_be_valid(): void
     {
+        $this->withoutJsonApiHeaders();
+
         $data = $this->validCredentials(['email' => 'invalid']);
 
         $response = $this->postJson(route('api.v1.register'), $data);
@@ -84,6 +90,8 @@ class RegisterTest extends TestCase
     /** @test */
     public function email_in_register_must_be_unique(): void
     {
+        $this->withoutJsonApiHeaders();
+
         $user = User::factory()->create();
 
         $data = $this->validCredentials(['email' => $user->email]);
@@ -97,6 +105,7 @@ class RegisterTest extends TestCase
     /** @test */
     public function password_in_register_is_required(): void
     {
+        $this->withoutJsonApiHeaders();
 
         $data = $this->validCredentials(['password' => '']);
 
@@ -109,6 +118,7 @@ class RegisterTest extends TestCase
     /** @test */
     public function password_in_register_must_be_confirmed(): void
     {
+        $this->withoutJsonApiHeaders();
 
         $data = $this->validCredentials(['password' => 'password', 'password_confirmation' => 'not-confirmed']);
 
@@ -122,6 +132,8 @@ class RegisterTest extends TestCase
      public function device_name_register_is_required(): void
      {
          $this->withoutJsonApiDocumentFormatting();
+
+         $this->withoutJsonApiHeaders();
 
          $data = $this->validCredentials(['device_name' => '']);
 
