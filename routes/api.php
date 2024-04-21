@@ -11,8 +11,10 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\ArticleAuthorController;
 use App\Http\Controllers\Api\ArticleCategoryController;
+use App\Http\Controllers\Api\CommentController;
 
 Route::apiResource('articles', ArticleController::class);
+Route::apiResource('comments', CommentController::class);
 Route::apiResource('categories', CategoryController::class)->only('index', 'show');
 Route::apiResource('authors', AuthorController::class)->only('index', 'show');
 
