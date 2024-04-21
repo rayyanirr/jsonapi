@@ -11,7 +11,7 @@ class JsonApiValidationErrorResponse extends JsonResponse
     {
         $data = $this->formatJsonApiError($e);
         $headers = [
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ];
         parent::__construct($data, $status, $headers);
     }
@@ -28,10 +28,10 @@ class JsonApiValidationErrorResponse extends JsonResponse
                         'title' => $title,
                         'detail' => $message[0],
                         'source' => [
-                            'pointer' => '/' . str_replace('.', '/', $field)
-                        ]
+                            'pointer' => '/'.str_replace('.', '/', $field),
+                        ],
                     ];
-                })->values()
+                })->values(),
         ];
     }
 }

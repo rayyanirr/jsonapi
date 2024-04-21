@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Articles;
 
+use Tests\TestCase;
 use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class ListArticlesTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function can_fetch_a_single_article()
@@ -21,7 +20,7 @@ class ListArticlesTest extends TestCase
         $response->assertJsonApiResource($article, [
             'title' => $article->title,
             'slug' => $article->slug,
-            'content' => $article->content
+            'content' => $article->content,
         ])->assertJsonApiRelationshipsLinks($article, ['category', 'author']);
     }
 
@@ -32,10 +31,10 @@ class ListArticlesTest extends TestCase
 
         $articles = Article::factory()->count(3)->create();
 
-        $response =  $this->getJson(route('api.v1.articles.index'));
+        $response = $this->getJson(route('api.v1.articles.index'));
 
         $response->assertJsonApiResourceCollection($articles, [
-            'title', 'slug', 'content'
+            'title', 'slug', 'content',
         ]);
     }
 
@@ -48,7 +47,7 @@ class ListArticlesTest extends TestCase
         $response->assertJsonApiError(
             title: 'Not Found',
             detail: "No records found with the id 'not-existing' in the 'articles' resource.",
-            status: "404"
+            status: '404'
         );
     }
 }

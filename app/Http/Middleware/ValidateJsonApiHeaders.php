@@ -3,9 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-
 use Illuminate\Http\Request;
-
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ValidateJsonApiHeaders
@@ -28,7 +26,7 @@ class ValidateJsonApiHeaders
         }
 
         return $next($request)->withHeaders([
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ]);
     }
 }

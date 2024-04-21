@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Articles;
 
+use Tests\TestCase;
 use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class PaginateArticlesTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function can_paginate_articles(): void
@@ -22,11 +21,10 @@ class PaginateArticlesTest extends TestCase
             'page' => [
                 'size' => 2,
                 'number' => 2,
-            ]
+            ],
         ]);
 
         $response = $this->getJson($url);
-
 
         $response->assertSee([
             $articles[2]->title,
@@ -40,7 +38,7 @@ class PaginateArticlesTest extends TestCase
             $articles[5]->title,
         ]);
         $response->assertJsonStructure([
-            'links' => ['first', 'last', 'prev', 'next']
+            'links' => ['first', 'last', 'prev', 'next'],
         ]);
 
         $firstLink = urldecode($response->json('links.first'));
@@ -77,7 +75,7 @@ class PaginateArticlesTest extends TestCase
             'page' => [
                 'size' => 1,
                 'number' => 2,
-            ]
+            ],
         ]);
 
         $response = $this->getJson($url);
@@ -92,8 +90,8 @@ class PaginateArticlesTest extends TestCase
         $this->assertStringContainsString('filter[title]=laravel', $prevLink);
         $this->assertStringContainsString('filter[title]=laravel', $nextLink);
 
-
     }
+
     /** @test */
     public function can_paginate_sorted_articles(): void
     {
@@ -108,21 +106,19 @@ class PaginateArticlesTest extends TestCase
             'page' => [
                 'size' => 1,
                 'number' => 2,
-            ]
+            ],
         ]);
 
         $response = $this->getJson($url);
 
-
         $response->assertSee([
-            'B title'
+            'B title',
 
         ]);
         $response->assertDontSee([
             'A title',
-            'C title'
+            'C title',
         ]);
-
 
         $firstLink = urldecode($response->json('links.first'));
         $lastLink = urldecode($response->json('links.last'));
@@ -133,7 +129,6 @@ class PaginateArticlesTest extends TestCase
         $this->assertStringContainsString('sort=title', $lastLink);
         $this->assertStringContainsString('sort=title', $prevLink);
         $this->assertStringContainsString('sort=title', $nextLink);
-
 
     }
 }

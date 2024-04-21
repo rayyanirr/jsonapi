@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
-use App\Http\Responses\TokenResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Responses\TokenResponse;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 class RegisterController extends Controller implements HasMiddleware
 {
     public static function middleware()
     {
         return [
-            (new Middleware('guest:sanctum'))
+            (new Middleware('guest:sanctum')),
         ];
     }
-
 
     /**
      * Handle the incoming request.
@@ -27,8 +26,8 @@ class RegisterController extends Controller implements HasMiddleware
 
         $request->validate([
             'name' => ['required'],
-            'email' => ['required','email', 'unique:users'],
-            'password' => ['required','confirmed'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'confirmed'],
             'device_name' => ['required'],
         ]);
 

@@ -3,14 +3,14 @@
 namespace App\JsonApi\Traits;
 
 use App\JsonApi\Document;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\MissingValue;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 trait JsonApiResource
 {
-    abstract public  function toJsonApi(): array;
+    abstract public function toJsonApi(): array;
 
     public function toArray(Request $request): array
     {
@@ -31,7 +31,7 @@ trait JsonApiResource
             ->attributes($this->filterAttributes($this->toJsonApi()))
             ->relationshipsLinks($this->getRelationshipLinks())
             ->links([
-                'self' => route('api.v1.' . $this->resource->getResourceType() . '.show', $this->resource),
+                'self' => route('api.v1.'.$this->resource->getResourceType().'.show', $this->resource),
             ])
             ->get('data');
     }
@@ -50,7 +50,7 @@ trait JsonApiResource
     {
         $response->header(
             'Location',
-            route('api.v1.' . $this->getResourceType() . '.show', $this->resource)
+            route('api.v1.'.$this->getResourceType().'.show', $this->resource)
         );
     }
 
@@ -60,10 +60,11 @@ trait JsonApiResource
             if (request()->isNotFilled('fields')) {
                 return true;
             }
-            $fields = explode(',', request('fields.' . $this->getResourceType()));
+            $fields = explode(',', request('fields.'.$this->getResourceType()));
             if ($value === $this->getRouteKey()) {
                 return in_array($this->getRouteKeyName(), $fields);
             }
+
             return $value;
         });
     }
@@ -86,7 +87,6 @@ trait JsonApiResource
                 }
             }
         }
-
 
         $collection->with['links'] = ['self' => $resources->path()];
 

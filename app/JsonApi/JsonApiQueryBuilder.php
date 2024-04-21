@@ -2,20 +2,17 @@
 
 namespace App\JsonApi;
 
-
 use Closure;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class JsonApiQueryBuilder
 {
-
     public function allowedSorts(): Closure
     {
 
         return function ($allowedSorts) {
             /** @var Builder $this */
-
             if (request()->filled('sort')) {
 
                 $sortFields = explode(',', request()->input('sort'));
@@ -44,7 +41,6 @@ class JsonApiQueryBuilder
 
         return function ($allowedFilters) {
             /** @var Builder $this */
-
             foreach (request('filter', []) as $filter => $value) {
 
                 if (! in_array($filter, $allowedFilters)) {
@@ -52,9 +48,9 @@ class JsonApiQueryBuilder
                     throw new BadRequestHttpException("the filter field '{$filter}' is not allowed in the '{$this->getResourceType()}' resource");
                 }
 
-                $this->hasNamedScope($filter)  ?
-                    $this->{$filter}($value)  :
-                    $this->where($filter, 'like', '%' . $value . '%');
+                $this->hasNamedScope($filter) ?
+                    $this->{$filter}($value) :
+                    $this->where($filter, 'like', '%'.$value.'%');
             }
 
             return $this;
@@ -66,7 +62,6 @@ class JsonApiQueryBuilder
 
         return function ($allowedIncludes) {
             /** @var Builder $this */
-
             if (request()->isNotFilled('include')) {
                 return $this;
             }
@@ -74,13 +69,12 @@ class JsonApiQueryBuilder
 
             foreach ($includes as $include) {
 
-
                 if (! in_array($include, $allowedIncludes)) {
 
                     throw new BadRequestHttpException("the include relationship '{$include}' is not allowed in the '{$this->getResourceType()}' resource");
                 }
 
-                 $this->with($include);
+                $this->with($include);
             }
 
             return $this;
@@ -90,19 +84,17 @@ class JsonApiQueryBuilder
     public function sparseFieldset(): Closure
     {
 
-
         return function () {
             /** @var Builder $this */
-
             if (request()->isNotFilled('fields')) {
                 return $this;
             }
 
-            $fields = explode(',', request('fields.' . $this->getResourceType()));
+            $fields = explode(',', request('fields.'.$this->getResourceType()));
 
             $routeKeyName = $this->model->getRouteKeyName();
 
-            if (!in_array($routeKeyName, $fields)) {
+            if (! in_array($routeKeyName, $fields)) {
                 $fields[] = $routeKeyName;
             }
 
@@ -131,7 +123,8 @@ class JsonApiQueryBuilder
             if (property_exists($this->model, 'resourceType')) {
                 return $this->model->resourceType;
             }
-            return  $this->model->getTable();
+
+            return $this->model->getTable();
         };
     }
 }

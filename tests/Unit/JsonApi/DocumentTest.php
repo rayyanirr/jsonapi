@@ -2,30 +2,27 @@
 
 namespace Tests\Unit\JsonApi;
 
-use App\JsonApi\Document;
-use App\Models\Category;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
+use App\JsonApi\Document;
 use PHPUnit\Framework\TestCase;
 
 class DocumentTest extends TestCase
 {
-
     /** @test */
     public function can_create_json_api_documents(): void
     {
 
-        $category = Mockery::mock('Category', function($mock){
+        $category = Mockery::mock('Category', function ($mock) {
             $mock->shouldReceive('getResourceType')->andReturn('categories');
             $mock->shouldReceive('getRouteKey')->andReturn('category-id');
         });
-        $document =  Document::type('articles')
+        $document = Document::type('articles')
             ->id('article-id')
             ->attributes([
-                'title' => 'Article title'
+                'title' => 'Article title',
             ])
             ->relationshipData([
-                'category' => $category
+                'category' => $category,
             ])
             ->toArray();
 
@@ -34,19 +31,18 @@ class DocumentTest extends TestCase
                 'type' => 'articles',
                 'id' => 'article-id',
                 'attributes' => [
-                    'title' => 'Article title'
+                    'title' => 'Article title',
                 ],
                 'relationships' => [
                     'category' => [
                         'data' => [
                             'type' => 'categories',
-                            'id' => 'category-id'
-                        ]
-                    ]
-                ]
-            ]
+                            'id' => 'category-id',
+                        ],
+                    ],
+                ],
+            ],
         ];
-
 
         $this->assertEquals($expected, $document);
     }

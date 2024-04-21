@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use App\JsonApi\JsonApiQueryBuilder;
+use Illuminate\Http\Request;
 use App\JsonApi\JsonApiRequest;
+use App\JsonApi\JsonApiQueryBuilder;
 use App\JsonApi\JsonApiTestResponse;
+use Illuminate\Testing\TestResponse;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Testing\TestResponse;
 
 class JsonApiServiceProvider extends ServiceProvider
 {

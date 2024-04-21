@@ -18,12 +18,14 @@ class ArticleResource extends JsonResource
         ];
     }
 
-    public function getRelationshipLinks(): array  {
+    public function getRelationshipLinks(): array
+    {
 
-        return ['category','author'];
+        return ['category', 'author'];
     }
 
-    public function getIncludes(): array  {
+    public function getIncludes(): array
+    {
 
         return [
 
@@ -32,6 +34,4 @@ class ArticleResource extends JsonResource
 
         ];
     }
-
-
 }

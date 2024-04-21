@@ -2,12 +2,11 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\PersonalAccessToken;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use App\Models\User;
+use Laravel\Sanctum\Sanctum;
+use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RegisterTest extends TestCase
 {
@@ -20,13 +19,12 @@ class RegisterTest extends TestCase
 
     }
 
-
     /** @test */
     public function can_register(): void
     {
         $response = $this->postJson(route('api.v1.register'), $data = $this->validCredentials());
 
-        $this->assertDatabaseHas('users',[
+        $this->assertDatabaseHas('users', [
             'name' => $data['name'],
             'email' => $data['email'],
         ]);
@@ -35,9 +33,7 @@ class RegisterTest extends TestCase
 
         $this->assertNotNull(PersonalAccessToken::findToken($token), 'The token plain is invalid');
 
-
     }
-
 
     /** @test */
     public function authenticated_users_cannot_register_again(): void
@@ -58,7 +54,7 @@ class RegisterTest extends TestCase
 
         $response = $this->postJson(route('api.v1.register'), $data);
 
-         $response->assertJsonValidationErrorFor('name');
+        $response->assertJsonValidationErrorFor('name');
 
     }
 
@@ -71,7 +67,7 @@ class RegisterTest extends TestCase
 
         $response = $this->postJson(route('api.v1.register'), $data);
 
-         $response->assertJsonValidationErrorFor('email');
+        $response->assertJsonValidationErrorFor('email');
 
     }
 
@@ -84,7 +80,7 @@ class RegisterTest extends TestCase
 
         $response = $this->postJson(route('api.v1.register'), $data);
 
-       $response->assertJsonValidationErrors(['email' => 'email']);
+        $response->assertJsonValidationErrors(['email' => 'email']);
     }
 
     /** @test */
@@ -98,9 +94,8 @@ class RegisterTest extends TestCase
 
         $response = $this->postJson(route('api.v1.register'), $data);
 
-       $response->assertJsonValidationErrors('email');
+        $response->assertJsonValidationErrors('email');
     }
-
 
     /** @test */
     public function password_in_register_is_required(): void
@@ -111,7 +106,7 @@ class RegisterTest extends TestCase
 
         $response = $this->postJson(route('api.v1.register'), $data);
 
-         $response->assertJsonValidationErrorFor('password');
+        $response->assertJsonValidationErrorFor('password');
 
     }
 
@@ -124,32 +119,32 @@ class RegisterTest extends TestCase
 
         $response = $this->postJson(route('api.v1.register'), $data);
 
-         $response->assertJsonValidationErrorFor('password');
+        $response->assertJsonValidationErrorFor('password');
 
     }
 
-     /** @test */
-     public function device_name_register_is_required(): void
-     {
-         $this->withoutJsonApiDocumentFormatting();
+    /** @test */
+    public function device_name_register_is_required(): void
+    {
+        $this->withoutJsonApiDocumentFormatting();
 
-         $this->withoutJsonApiHeaders();
+        $this->withoutJsonApiHeaders();
 
-         $data = $this->validCredentials(['device_name' => '']);
+        $data = $this->validCredentials(['device_name' => '']);
 
-         $response = $this->postJson(route('api.v1.register'), $data);
+        $response = $this->postJson(route('api.v1.register'), $data);
 
         $response->assertJsonValidationErrorFor('device_name');
-     }
+    }
 
     protected function validCredentials(mixed $overrides = []): array
     {
-        return  array_merge([
-                'name' => 'Rayyanir Rosales',
-                'email' => 'rayyanir@example.com',
-                'password' => 'password',
-                'password_confirmation' => 'password',
-                'device_name' => 'My device',
+        return array_merge([
+            'name' => 'Rayyanir Rosales',
+            'email' => 'rayyanir@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'device_name' => 'My device',
         ], $overrides);
 
     }

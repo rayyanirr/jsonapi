@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Articles;
 
+use Tests\TestCase;
+use App\Models\User;
 use App\Models\Article;
 use App\Models\Category;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateArticleTest extends TestCase
 {
@@ -28,8 +28,8 @@ class CreateArticleTest extends TestCase
             'content' => 'contenido del articulo',
             '_relationships' => [
                 'category' => $category,
-                'author' => $user
-            ]
+                'author' => $user,
+            ],
         ]);
 
         $response->assertCreated();
@@ -39,7 +39,7 @@ class CreateArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'Nuevo Articulo',
             'user_id' => $user->id,
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
 
         $response->assertHeader(
@@ -54,13 +54,13 @@ class CreateArticleTest extends TestCase
                 'attributes' => [
                     'title' => 'Nuevo Articulo',
                     'slug' => 'nuevo-articulo',
-                    'content' => 'contenido del articulo'
+                    'content' => 'contenido del articulo',
                 ],
                 'links' => [
                     'self' => route('api.v1.articles.show', $article),
 
-                ]
-            ]
+                ],
+            ],
 
         ]);
     }
@@ -72,7 +72,7 @@ class CreateArticleTest extends TestCase
         $response = $this->postJson(route('api.v1.articles.store'), [
 
             'slug' => 'nuevo-articulo',
-            'content' => 'contenido del articulo'
+            'content' => 'contenido del articulo',
 
         ]);
 
@@ -86,7 +86,7 @@ class CreateArticleTest extends TestCase
         $response = $this->postJson(route('api.v1.articles.store'), [
 
             'title' => 'nulll',
-            'content' => 'contenido del articulo'
+            'content' => 'contenido del articulo',
 
         ]);
 
@@ -102,7 +102,7 @@ class CreateArticleTest extends TestCase
         $response = $this->postJson(route('api.v1.articles.store'), [
             'slug' => $article->slug,
             'title' => 'nulll',
-            'content' => 'contenido del articulo'
+            'content' => 'contenido del articulo',
 
         ]);
 
@@ -117,51 +117,51 @@ class CreateArticleTest extends TestCase
         $response = $this->postJson(route('api.v1.articles.store'), [
             'slug' => '$%~&',
             'title' => 'nulll',
-            'content' => 'contenido del articulo'
+            'content' => 'contenido del articulo',
 
         ]);
 
         $response->assertJsonApiValidationErrors('slug');
     }
 
-     /** @test */
-     public function slug_must_not_contain_underscores()
-     {
+    /** @test */
+    public function slug_must_not_contain_underscores()
+    {
         Sanctum::actingAs(User::factory()->create());
-          $this->postJson(route('api.v1.articles.store'), [
-             'slug' => 'prueba_a',
-             'title' => 'nulll',
-             'content' => 'contenido del articulo'
+        $this->postJson(route('api.v1.articles.store'), [
+            'slug' => 'prueba_a',
+            'title' => 'nulll',
+            'content' => 'contenido del articulo',
 
-         ])->assertSee(__('validation.no_underscores',['attribute' => 'data.attributes.slug']))
-           ->assertJsonApiValidationErrors('slug');
-     }
+        ])->assertSee(__('validation.no_underscores', ['attribute' => 'data.attributes.slug']))
+            ->assertJsonApiValidationErrors('slug');
+    }
 
-     /** @test */
-     public function slug_must_not_start_with_dashes()
-     {
+    /** @test */
+    public function slug_must_not_start_with_dashes()
+    {
         Sanctum::actingAs(User::factory()->create());
-         $response = $this->postJson(route('api.v1.articles.store'), [
-             'slug' => '-pruebaa',
-             'title' => 'nulll',
-             'content' => 'contenido del articulo'
+        $response = $this->postJson(route('api.v1.articles.store'), [
+            'slug' => '-pruebaa',
+            'title' => 'nulll',
+            'content' => 'contenido del articulo',
 
-         ])->assertSee(__('validation.no_starting_dashes',['attribute' => 'data.attributes.slug']))
-         ->assertJsonApiValidationErrors('slug');
-     }
+        ])->assertSee(__('validation.no_starting_dashes', ['attribute' => 'data.attributes.slug']))
+            ->assertJsonApiValidationErrors('slug');
+    }
 
-     /** @test */
-     public function slug_must_not_end_with_dashes()
-     {
+    /** @test */
+    public function slug_must_not_end_with_dashes()
+    {
         Sanctum::actingAs(User::factory()->create());
-         $response = $this->postJson(route('api.v1.articles.store'), [
-             'slug' => 'pruebaa-',
-             'title' => 'nulll',
-             'content' => 'contenido del articulo'
+        $response = $this->postJson(route('api.v1.articles.store'), [
+            'slug' => 'pruebaa-',
+            'title' => 'nulll',
+            'content' => 'contenido del articulo',
 
-         ])->assertSee(__('validation.no_ending_dashes',['attribute' => 'data.attributes.slug']))
-         ->assertJsonApiValidationErrors('slug');
-     }
+        ])->assertSee(__('validation.no_ending_dashes', ['attribute' => 'data.attributes.slug']))
+            ->assertJsonApiValidationErrors('slug');
+    }
 
     /** @test */
     public function content_is_required()
@@ -172,12 +172,10 @@ class CreateArticleTest extends TestCase
             'title' => 'nuevo articulo',
             'slug' => 'nuevo-articulo',
 
-
         ]);
 
         $response->assertJsonApiValidationErrors('content');
     }
-
 
     /** @test */
     public function category_relations_is_required()
@@ -194,7 +192,6 @@ class CreateArticleTest extends TestCase
         $response->assertJsonApiValidationErrors('data.relationships.category.data.id');
     }
 
-
     /** @test */
     public function category_must_exists_in_database()
     {
@@ -205,8 +202,8 @@ class CreateArticleTest extends TestCase
             'slug' => 'nuevo-articulo',
             'content' => 'contenido del articulo',
             '_relationships' => [
-                'category' => Category::factory()->make()
-            ]
+                'category' => Category::factory()->make(),
+            ],
         ]);
 
         $response->assertJsonApiValidationErrors('relationships.category');
@@ -226,12 +223,11 @@ class CreateArticleTest extends TestCase
             'content' => 'contenido del articulo',
             '_relationships' => [
                 'category' => $category,
-                'author' => $user
-            ]
+                'author' => $user,
+            ],
         ]);
 
         //$response->dump()->assertUnauthorized();
-
 
         $response->assertJsonApiError(
             title: 'Unauthenticated',
@@ -239,7 +235,7 @@ class CreateArticleTest extends TestCase
             status : '401'
         );
 
-        $this->assertDatabaseCount('articles',0);
+        $this->assertDatabaseCount('articles', 0);
 
     }
 }

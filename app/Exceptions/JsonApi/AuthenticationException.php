@@ -4,7 +4,6 @@ namespace App\Exceptions\JsonApi;
 
 use Exception;
 
-
 class AuthenticationException extends Exception
 {
     public function render()
@@ -13,11 +12,11 @@ class AuthenticationException extends Exception
             'errors' => [
                 [
                     'title' => 'Unauthenticated',
-                    'detail' =>'This action required authentication.',
-                    'status' => '401'
-                ]
+                    'detail' => 'This action required authentication.',
+                    'status' => '401',
+                ],
 
-            ]
+            ],
         ], 401);
     }
 }

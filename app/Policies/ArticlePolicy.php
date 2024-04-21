@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\Article;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Article;
 
 class ArticlePolicy
 {
@@ -37,7 +36,7 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article): bool
     {
-       return $user->is($article->author) && $user->tokenCan('article:update');
+        return $user->is($article->author) && $user->tokenCan('article:update');
     }
 
     /**

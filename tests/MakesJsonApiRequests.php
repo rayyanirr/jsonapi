@@ -4,15 +4,13 @@ namespace tests;
 
 use App\JsonApi\Document;
 use Illuminate\Support\Str;
-use Closure;
 use Illuminate\Testing\TestResponse;
 
 trait MakesJsonApiRequests
 {
-
     protected bool $formatJsonApiDocument = true;
-    protected bool $addJsonHeaders = true;
 
+    protected bool $addJsonHeaders = true;
 
     public function withoutJsonApiDocumentFormatting(): self
     {
@@ -21,7 +19,6 @@ trait MakesJsonApiRequests
         return $this;
     }
 
-
     public function withoutJsonApiHeaders(): self
     {
         $this->addJsonHeaders = false;
@@ -29,7 +26,8 @@ trait MakesJsonApiRequests
         return $this;
     }
 
-    public function withoutJsonApiHelpers() : self {
+    public function withoutJsonApiHelpers(): self
+    {
 
         $this->formatJsonApiDocument = true;
         $this->addJsonHeaders = true;
@@ -49,14 +47,14 @@ trait MakesJsonApiRequests
             }
         }
 
-
         if ($this->formatJsonApiDocument) {
 
-            if (!isset($data['data'])) {
+            if (! isset($data['data'])) {
 
-                $formattedData =  $this->getFormattedData($uri, $data);
+                $formattedData = $this->getFormattedData($uri, $data);
             }
         }
+
         return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
     }
 
@@ -65,7 +63,6 @@ trait MakesJsonApiRequests
         $path = parse_url($uri)['path'];
         $type = (string) Str::of($path)->after('api/v1/')->before('/');
         $id = (string) Str::of($path)->after($type)->replace('/', '');
-
 
         return Document::type($type)
             ->id($id)

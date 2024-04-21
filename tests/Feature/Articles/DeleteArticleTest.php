@@ -2,16 +2,15 @@
 
 namespace Tests\Feature\Articles;
 
-use App\Models\Article;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Article;
+use Laravel\Sanctum\Sanctum;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DeleteArticleTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function can_delete_owned_articles(): void
@@ -21,26 +20,26 @@ class DeleteArticleTest extends TestCase
         Sanctum::actingAs($article->author, ['article:delete']);
 
         $this->deleteJson(route('api.v1.articles.destroy', $article))
-        ->assertNoContent();
+            ->assertNoContent();
 
         $this->assertDatabaseCount('articles', 0);
     }
 
-     /** @test */
-     public function guests_cannot_delete_articles(): void
-     {
-         $article = Article::factory()->create();
+    /** @test */
+    public function guests_cannot_delete_articles(): void
+    {
+        $article = Article::factory()->create();
 
-         $response =  $this->deleteJson(route('api.v1.articles.destroy', $article));
+        $response = $this->deleteJson(route('api.v1.articles.destroy', $article));
 
-         $response->assertJsonApiError(
+        $response->assertJsonApiError(
             title: 'Unauthenticated',
             detail : 'This action required authentication.',
             status : '401'
         );
-     }
+    }
 
-     /** @test */
+    /** @test */
     public function cannot_delete_articles_owned_by_other_users()
     {
         $article = Article::factory()->create();
@@ -48,7 +47,7 @@ class DeleteArticleTest extends TestCase
         Sanctum::actingAs(User::factory()->create(), ['article:delete']);
 
         $this->deleteJson(route('api.v1.articles.destroy', $article))
-                ->assertForbidden();
+            ->assertForbidden();
 
         $this->assertDatabaseCount('articles', 1);
     }

@@ -2,16 +2,15 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\PersonalAccessToken;
-use App\Models\Permission;
-use App\Models\User;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Permission;
+use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LoginTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function can_issue_access_tokens(): void
@@ -21,7 +20,7 @@ class LoginTest extends TestCase
         $user = User::factory()->create();
 
         $data = $this->validCredentials([
-            'email' => $user->email
+            'email' => $user->email,
         ]);
 
         $response = $this->postJson(route('api.v1.login'), $data);
@@ -45,7 +44,7 @@ class LoginTest extends TestCase
 
         $data = $this->validCredentials([
             'email' => $user->email,
-            'password' => 'incorrect'
+            'password' => 'incorrect',
         ]);
 
         $response = $this->postJson(route('api.v1.login'), $data);
@@ -64,7 +63,7 @@ class LoginTest extends TestCase
 
         $response = $this->postJson(route('api.v1.login'), $data);
 
-       $response->assertJsonValidationErrorFor('email');
+        $response->assertJsonValidationErrorFor('email');
     }
 
     /** @test */
@@ -77,7 +76,7 @@ class LoginTest extends TestCase
 
         $response = $this->postJson(route('api.v1.login'), $data);
 
-       $response->assertJsonValidationErrors(['email' => 'required']);
+        $response->assertJsonValidationErrors(['email' => 'required']);
     }
 
     /** @test */
@@ -90,9 +89,8 @@ class LoginTest extends TestCase
 
         $response = $this->postJson(route('api.v1.login'), $data);
 
-       $response->assertJsonValidationErrors(['email' => 'email']);
+        $response->assertJsonValidationErrors(['email' => 'email']);
     }
-
 
     /** @test */
     public function password_is_required(): void
@@ -105,7 +103,7 @@ class LoginTest extends TestCase
 
         $response = $this->postJson(route('api.v1.login'), $data);
 
-       $response->assertJsonValidationErrors(['password' => 'required']);
+        $response->assertJsonValidationErrors(['password' => 'required']);
     }
 
     /** @test */
@@ -118,7 +116,7 @@ class LoginTest extends TestCase
 
         $response = $this->postJson(route('api.v1.login'), $data);
 
-       $response->assertJsonValidationErrors(['device_name' => 'required']);
+        $response->assertJsonValidationErrors(['device_name' => 'required']);
     }
 
     /** @test */
@@ -136,7 +134,7 @@ class LoginTest extends TestCase
         $user->givePermissionTo($permission2);
 
         $data = $this->validCredentials([
-            'email' => $user->email
+            'email' => $user->email,
         ]);
 
         $response = $this->postJson(route('api.v1.login'), $data);
@@ -149,32 +147,29 @@ class LoginTest extends TestCase
         $this->assertTrue($dbToken->can($permission2->name));
         $this->assertFalse($dbToken->can($permission3->name));
 
-
     }
 
-      /** @test */
-      public function only_one_access_token_can_be_issued_at_a_time(): void
-      {
-          $user = User::factory()->create();
+    /** @test */
+    public function only_one_access_token_can_be_issued_at_a_time(): void
+    {
+        $user = User::factory()->create();
 
-          $accessToken = $user->createToken($user->name)->plainTextToken;
+        $accessToken = $user->createToken($user->name)->plainTextToken;
 
-          $this->withHeader('Authorization', "Bearer $accessToken")
-                  ->postJson(route('api.v1.login'))
-                  ->assertNoContent();
+        $this->withHeader('Authorization', "Bearer $accessToken")
+            ->postJson(route('api.v1.login'))
+            ->assertNoContent();
 
-           $this->assertCount(1, $user->tokens);
-      }
+        $this->assertCount(1, $user->tokens);
+    }
 
     protected function validCredentials(mixed $overrides = []): array
     {
-        return  array_merge([
-                'email' => 'rayyanir@example.com',
-                'password' => 'password',
-                'device_name' => 'My device',
+        return array_merge([
+            'email' => 'rayyanir@example.com',
+            'password' => 'password',
+            'device_name' => 'My device',
         ], $overrides);
 
     }
-
-
 }

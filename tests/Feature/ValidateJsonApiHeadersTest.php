@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Http\Middleware\ValidateJsonApiHeaders;
-use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\ValidateJsonApiHeaders;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ValidateJsonApiHeadersTest extends TestCase
 {
@@ -26,7 +26,7 @@ class ValidateJsonApiHeadersTest extends TestCase
         $this->get('test_route')->assertStatus(406);
 
         $this->get('test_route', [
-            'accept' => 'application/vnd.api+json'
+            'accept' => 'application/vnd.api+json',
         ])->assertSuccessful();
     }
 
@@ -34,12 +34,12 @@ class ValidateJsonApiHeadersTest extends TestCase
     public function content_type_header_must_be_present_on_all_posts_resquests(): void
     {
         $this->post('test_route', [], [
-            'accept' => 'application/vnd.api+json'
+            'accept' => 'application/vnd.api+json',
         ])->assertStatus(415);
 
         $this->post('test_route', [], [
             'accept' => 'application/vnd.api+json',
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ])->assertSuccessful();
     }
 
@@ -47,12 +47,12 @@ class ValidateJsonApiHeadersTest extends TestCase
     public function content_type_header_must_be_present_on_all_patch_resquests(): void
     {
         $this->patch('test_route', [], [
-            'accept' => 'application/vnd.api+json'
+            'accept' => 'application/vnd.api+json',
         ])->assertStatus(415);
 
         $this->patch('test_route', [], [
             'accept' => 'application/vnd.api+json',
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ])->assertSuccessful();
     }
 
@@ -62,17 +62,17 @@ class ValidateJsonApiHeadersTest extends TestCase
         $this->get('test_route')->assertStatus(406);
 
         $this->get('test_route', [
-            'accept' => 'application/vnd.api+json'
+            'accept' => 'application/vnd.api+json',
         ])->assertHeader('content-type', 'application/vnd.api+json');
 
         $this->post('test_route', [], [
             'accept' => 'application/vnd.api+json',
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ])->assertHeader('content-type', 'application/vnd.api+json');
 
         $this->patch('test_route', [], [
             'accept' => 'application/vnd.api+json',
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ])->assertHeader('content-type', 'application/vnd.api+json');
     }
 
@@ -84,22 +84,22 @@ class ValidateJsonApiHeadersTest extends TestCase
         })->middleware(ValidateJsonApiHeaders::class);
 
         $this->get('test_route', [
-            'accept' => 'application/vnd.api+json'
+            'accept' => 'application/vnd.api+json',
         ])->assertHeaderMissing('content-type', 'application/vnd.api+json');
 
         $this->post('test_route', [], [
             'accept' => 'application/vnd.api+json',
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ])->assertHeaderMissing('content-type', 'application/vnd.api+json');
 
         $this->patch('test_route', [], [
             'accept' => 'application/vnd.api+json',
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ])->assertHeaderMissing('content-type', 'application/vnd.api+json');
 
         $this->delete('test_route', [], [
             'accept' => 'application/vnd.api+json',
-            'content-type' => 'application/vnd.api+json'
+            'content-type' => 'application/vnd.api+json',
         ])->assertHeaderMissing('content-type', 'application/vnd.api+json');
     }
 }

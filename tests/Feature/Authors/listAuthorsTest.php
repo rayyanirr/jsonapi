@@ -2,16 +2,14 @@
 
 namespace Tests\Feature\Authors;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class listAuthorsTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function can_fetch_a_single_author(): void
@@ -20,8 +18,8 @@ class listAuthorsTest extends TestCase
 
         $response = $this->getJson(route('api.v1.authors.show', $author));
 
-        $response->assertJsonApiResource($author,[
-            'name' => $author->name
+        $response->assertJsonApiResource($author, [
+            'name' => $author->name,
         ]);
 
         $this->assertTrue(
@@ -37,10 +35,10 @@ class listAuthorsTest extends TestCase
 
         $authors = User::factory()->count(3)->create();
 
-        $response =  $this->getJson(route('api.v1.authors.index'));
+        $response = $this->getJson(route('api.v1.authors.index'));
 
         $response->assertJsonApiResourceCollection($authors, [
-            'name'
+            'name',
         ]);
     }
 }

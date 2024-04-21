@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Http\Middleware\ValidateJsonApiDocument;
-use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\ValidateJsonApiDocument;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ValidateJsonApiDocumentTest extends TestCase
 {
@@ -22,7 +22,6 @@ class ValidateJsonApiDocumentTest extends TestCase
         })->middleware(ValidateJsonApiDocument::class);
     }
 
-
     /** @test */
     public function data_is_required(): void
     {
@@ -37,12 +36,12 @@ class ValidateJsonApiDocumentTest extends TestCase
     public function data_must_be_array(): void
     {
         $this->postJson('test_route', [
-            'data' => 'string'
+            'data' => 'string',
         ])
             ->assertJsonApiValidationErrors('data');
 
         $this->patchJson('test_route', [
-            'data' => 'string'
+            'data' => 'string',
         ])
             ->assertJsonApiValidationErrors('data');
     }
@@ -52,15 +51,15 @@ class ValidateJsonApiDocumentTest extends TestCase
     {
         $this->postJson('test_route', [
             'data' => [
-                'attributes' => []
-            ]
+                'attributes' => [],
+            ],
         ])
             ->assertJsonApiValidationErrors('data.type');
 
         $this->patchJson('test_route', [
             'data' => [
-                'attributes' => []
-            ]
+                'attributes' => [],
+            ],
         ])
             ->assertJsonApiValidationErrors('data.type');
     }
@@ -71,16 +70,16 @@ class ValidateJsonApiDocumentTest extends TestCase
         $this->postJson('test_route', [
             'data' => [
                 'type' => 1,
-                'attributes' => []
-            ]
+                'attributes' => [],
+            ],
         ])
             ->assertJsonApiValidationErrors('data.type');
 
         $this->patchJson('test_route', [
             'data' => [
                 'type' => 1,
-                'attributes' => []
-            ]
+                'attributes' => [],
+            ],
         ])
             ->assertJsonApiValidationErrors('data.type');
     }
@@ -91,14 +90,14 @@ class ValidateJsonApiDocumentTest extends TestCase
         $this->postJson('test_route', [
             'data' => [
                 'type' => 'String',
-            ]
+            ],
         ])
             ->assertJsonApiValidationErrors('data.attributes');
 
         $this->patchJson('test_route', [
             'data' => [
                 'type' => 'string',
-            ]
+            ],
         ])
             ->assertJsonApiValidationErrors('data.attributes');
     }
@@ -109,16 +108,16 @@ class ValidateJsonApiDocumentTest extends TestCase
         $this->postJson('test_route', [
             'data' => [
                 'type' => 1,
-                'attributes' => 1
-            ]
+                'attributes' => 1,
+            ],
         ])
             ->assertJsonApiValidationErrors('data.attributes');
 
         $this->patchJson('test_route', [
             'data' => [
                 'type' => 1,
-                'attributes' => 1
-            ]
+                'attributes' => 1,
+            ],
         ])
             ->assertJsonApiValidationErrors('data.attributes');
     }
@@ -129,11 +128,11 @@ class ValidateJsonApiDocumentTest extends TestCase
 
         $this->patchJson('test_route', [
             'data' => [
-                'type' => "string",
+                'type' => 'string',
                 'attributes' => [
-                    'name' => 'test'
-                ]
-            ]
+                    'name' => 'test',
+                ],
+            ],
         ])->assertJsonApiValidationErrors('data.id');
     }
 
@@ -143,15 +142,14 @@ class ValidateJsonApiDocumentTest extends TestCase
 
         $this->patchJson('test_route', [
             'data' => [
-                'id'=> 1,
-                'type' => "string",
+                'id' => 1,
+                'type' => 'string',
                 'attributes' => [
-                    'name' => 'test'
-                ]
-            ]
+                    'name' => 'test',
+                ],
+            ],
         ])->assertJsonApiValidationErrors('data.id');
     }
-
 
     /** @test */
     public function only_accepts_valid_json_api_document(): void
@@ -160,22 +158,19 @@ class ValidateJsonApiDocumentTest extends TestCase
             'data' => [
                 'type' => 'string',
                 'attributes' => [
-                    'name'=>'test'
-                ]
-            ]
+                    'name' => 'test',
+                ],
+            ],
         ])->assertSuccessful();
-
 
         $this->patchJson('test_route', [
             'data' => [
-                'id'=> '1',
-                'type' => "string",
+                'id' => '1',
+                'type' => 'string',
                 'attributes' => [
-                    'name' => 'test'
-                ]
-            ]
+                    'name' => 'test',
+                ],
+            ],
         ])->assertSuccessful();
     }
-
-
 }

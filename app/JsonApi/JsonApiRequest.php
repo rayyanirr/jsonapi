@@ -2,21 +2,17 @@
 
 namespace App\JsonApi;
 
-
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class JsonApiRequest
 {
-
     public function isJsonApi(): Closure
     {
 
         return function () {
 
             /** @var Request $this */
-
             if ($this->header('accept' === 'application/vnd.api+json')) {
 
                 return true;
@@ -66,7 +62,7 @@ class JsonApiRequest
 
             /** @var Request $this */
 
-            return  isset($this->validateData()['relationships']);
+            return isset($this->validateData()['relationships']);
         };
     }
 

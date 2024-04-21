@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Routing\Controllers\Middleware;
-use App\Http\Responses\TokenResponse;
+use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
-use App\Models\User;
+use App\Http\Responses\TokenResponse;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 class LoginController extends Controller implements HasMiddleware
 {
-
     public static function middleware()
     {
         return [
-            (new Middleware('guest:sanctum'))
+            (new Middleware('guest:sanctum')),
         ];
     }
 
@@ -36,10 +35,10 @@ class LoginController extends Controller implements HasMiddleware
 
         $user = User::whereEmail($request->email)->first();
 
-        if (!$user || ! Hash::check($request->password, $user->password)) {
-           throw  ValidationException::withMessages([
-                'email' => [__('auth.failed')]
-           ]);
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => [__('auth.failed')],
+            ]);
 
         }
 

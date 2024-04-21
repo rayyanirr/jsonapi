@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Article extends Model
 {
@@ -31,7 +31,6 @@ class Article extends Model
 
     public $resourceType = 'articles';
 
-
     public function getRouteKeyName()
     {
         return 'slug';
@@ -44,9 +43,8 @@ class Article extends Model
 
     public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
-
 
     public function scopeYear(Builder $query, string $year): void
     {
@@ -55,13 +53,13 @@ class Article extends Model
 
     public function scopeMonth(Builder $query, string $month): void
     {
-        $query->whereMonth('created_at',$month);
+        $query->whereMonth('created_at', $month);
     }
 
     public function scopeCategories(Builder $query, $categories): void
     {
         $categorySlugs = explode(',', $categories);
-        $query->whereHas('category',function($q) use ($categorySlugs) {
+        $query->whereHas('category', function ($q) use ($categorySlugs) {
             $q->whereIn('slug', $categorySlugs);
         });
     }
