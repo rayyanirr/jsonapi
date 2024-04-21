@@ -3,6 +3,7 @@
 namespace Tests\Feature\Articles;
 
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -177,6 +178,44 @@ class UpdateArticleTest extends TestCase
             'slug' => $article->slug,
             'content' => 'Update Content'
         ])->assertForbidden();
+
+
+    }
+
+
+
+    /** @test */
+    public function can_update_owned_articles_with_relationships()
+    {
+        $article = Article::factory()->create();
+        $category = Category::factory()->create();
+
+        Sanctum::actingAs($article->author, ['article:update']);
+
+        $response = $this->patchJson(route('api.v1.articles.update', $article), [
+
+            'title' => 'Update Articulo',
+            'slug' => $article->slug,
+            'content' => 'Update Content',
+            '_relationships' => [
+                'category' => $category
+            ]
+        ]);
+
+        $response->assertOk();
+
+        $response->assertJsonApiResource($article,[
+            'title' => 'Update Articulo',
+            'slug' => $article->slug,
+            'content' => 'Update Content',
+
+        ]);
+
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Update Articulo',
+            'category_id' => $category->id
+
+        ]);
 
 
     }

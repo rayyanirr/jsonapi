@@ -51,16 +51,15 @@ class ArticleController extends Controller implements HasMiddleware
     {
         $this->authorize('create', Article::class);
 
-        $data = $request->validated()['data'];
+        $articleData = $request->getAttributes();
 
-        $articleData = $data['attributes'];
+        $articleData['user_id'] = $request->getRelationshipId('author');
 
-        $articleData['user_id'] = $data['relationships']['author']['data']['id'];
-
-        $categorySlug = $data['relationships']['category']['data']['id'];
-        $category = Category::whereSlug( $categorySlug)->first();
-
+        $categorySlug =  $request->getRelationshipId('category');
+        $category = Category::whereSlug($categorySlug)->first();
         $articleData['category_id'] = $category->id;
+
+
 
         $article = Article::create($articleData);
 
@@ -71,29 +70,22 @@ class ArticleController extends Controller implements HasMiddleware
     {
         $this->authorize('update', $article);
 
-        $data = $request->validated()['data'];
+        $articleData = $request->getAttributes();
 
-        $articleData = $data['attributes'];
+        if ($request->hasRelationship('author')) {
 
-        if (isset($articleData['relationships'])) {
-
-            if (isset($data['relationships']['author'])) {
-
-                $articleData['user_id'] = $data['relationships']['author']['data']['id'];
-            }
-
-            if ($data['relationships']['category']) {
-
-                $categorySlug = $data['relationships']['category']['data']['id'];
-
-                $category = Category::whereSlug( $categorySlug)->first();
-
-                $articleData['category_id'] = $category->id;
-            }
-
-
-
+            $articleData['user_id'] = $request->getRelationshipId('author');
         }
+
+        if ($request->hasRelationship('category')) {
+
+            $categorySlug = $request->getRelationshipId('category');
+
+            $category = Category::whereSlug($categorySlug)->first();
+
+            $articleData['category_id'] = $category->id;
+        }
+
 
 
         $article->update($articleData);
