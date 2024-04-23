@@ -59,4 +59,92 @@ class CreateCommentsTest extends TestCase
                 'user_id' => $user->id,
             ]);
     }
+
+    /** @test */
+    public function body_is_required(): void
+    {
+
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->assertDatabaseCount('comments', 0);
+
+        $this->postJson(route('api.v1.comments.store'), [
+            'body' => null,
+
+        ])->assertJsonApiValidationErrors('body');
+
+    }
+
+    /** @test */
+    public function article_relationship_is_required(): void
+    {
+
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->assertDatabaseCount('comments', 0);
+
+        $this->postJson(route('api.v1.comments.store'), [
+            'body' => 'Comment Body',
+
+        ])->assertJsonApiValidationErrors('relationships.article');
+
+    }
+
+    /** @test */
+    public function article_must_exists_in_database(): void
+    {
+
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->assertDatabaseCount('comments', 0);
+
+        $this->postJson(route('api.v1.comments.store'), [
+            'body' => 'Comment Body',
+            '_relationships' => [
+                'article' => Article::factory()->make(),
+
+            ],
+
+        ])->assertJsonApiValidationErrors('relationships.article');
+
+    }
+
+    /** @test */
+    public function author_relationship_is_required(): void
+    {
+
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->assertDatabaseCount('comments', 0);
+
+        $this->postJson(route('api.v1.comments.store'), [
+            'body' => 'Comment Body',
+            '_relationships' => [
+                'article' => Article::factory()->create(),
+
+            ],
+
+        ])->assertJsonApiValidationErrors('relationships.author');
+
+    }
+
+    /** @test */
+    public function author_must_exists_in_database(): void
+    {
+
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->assertDatabaseCount('comments', 0);
+
+        $this->postJson(route('api.v1.comments.store'), [
+            'body' => 'Comment Body',
+            '_relationships' => [
+                'article' => Article::factory()->create(),
+                'author' => User::factory()->make(['id' => 'uuid']),
+
+            ],
+
+        ])->assertJsonApiValidationErrors('relationships.author');
+
+    }
 }
