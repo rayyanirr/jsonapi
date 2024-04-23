@@ -43,9 +43,9 @@ class CommentPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Comment $comment): bool
+    public function delete(User $user, Comment $comment): Response|bool
     {
-        //
+        return $user->is($comment->author) && $user->tokenCan('comment:delete');
     }
 
     /**

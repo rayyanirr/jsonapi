@@ -68,6 +68,10 @@ class CommentController extends Controller implements HasMiddleware
 
     public function destroy(Comment $comment)
     {
-        //
+        $this->authorize('delete', $comment);
+
+        $comment->delete();
+
+        return response()->noContent();
     }
 }
