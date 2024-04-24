@@ -12,11 +12,19 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\ArticleAuthorController;
 use App\Http\Controllers\Api\ArticleCategoryController;
+use App\Http\Controllers\Api\CommentArticleController;
+
+Route::apiResource('authors', AuthorController::class)->only('index', 'show');
+Route::apiResource('categories', CategoryController::class)->only('index', 'show');
+
+Route::apiResource('comments', CommentController::class);
+
+ Route::get('comments/{comment}/relationships/article', [CommentArticleController::class, 'index'])->name('comments.relationships.article');
+ Route::get('comments/{comment}/article', [CommentArticleController::class, 'show'])->name('comments.article');
+Route::patch('comments/{comment}/relationships/article', [CommentArticleController::class, 'update'])->name('comments.relationships.article.update');
+
 
 Route::apiResource('articles', ArticleController::class);
-Route::apiResource('comments', CommentController::class);
-Route::apiResource('categories', CategoryController::class)->only('index', 'show');
-Route::apiResource('authors', AuthorController::class)->only('index', 'show');
 
 Route::get('articles/{article}/relationships/category', [ArticleCategoryController::class, 'index'])->name('articles.relationships.category');
 Route::patch('articles/{article}/relationships/category', [ArticleCategoryController::class, 'update'])->name('articles.relationships.category.update');
@@ -25,6 +33,11 @@ Route::get('articles/{article}/category', [ArticleCategoryController::class, 'sh
 Route::get('articles/{article}/relationships/author', [ArticleAuthorController::class, 'index'])->name('articles.relationships.author');
 Route::patch('articles/{article}/relationships/author', [ArticleAuthorController::class, 'update'])->name('articles.relationships.author.update');
 Route::get('articles/{article}/author', [ArticleAuthorController::class, 'show'])->name('articles.author');
+
+
+
+
+
 
 Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders::class])
     ->group(function () {
