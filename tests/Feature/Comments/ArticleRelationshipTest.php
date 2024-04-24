@@ -2,16 +2,14 @@
 
 namespace Tests\Feature\Comments;
 
+use Tests\TestCase;
 use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 
 class ArticleRelationshipTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function can_fetch_the_associated_article_identifier(): void
@@ -50,7 +48,6 @@ class ArticleRelationshipTest extends TestCase
             ],
         ]);
     }
-
 
     /** @test */
     public function can_update_the_associated_article(): void

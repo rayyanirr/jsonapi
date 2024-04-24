@@ -2,17 +2,15 @@
 
 namespace Tests\Feature\Comments;
 
-use App\Models\Comment;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Comment;
+use Laravel\Sanctum\Sanctum;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DeleteCommentsTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function guests_cannot_delete_comments(): void
@@ -21,10 +19,10 @@ class DeleteCommentsTest extends TestCase
 
         $this->deleteJson(route('api.v1.comments.destroy', $comment))
             ->assertJsonApiError(
-            title: 'Unauthenticated',
-            detail : 'This action required authentication.',
-            status : '401'
-        );
+                title: 'Unauthenticated',
+                detail : 'This action required authentication.',
+                status : '401'
+            );
     }
 
     /** @test */
