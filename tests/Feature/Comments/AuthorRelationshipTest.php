@@ -2,16 +2,14 @@
 
 namespace Tests\Feature\Comments;
 
-use App\Models\Comment;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Comment;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthorRelationshipTest extends TestCase
 {
     use RefreshDatabase;
-
 
     /** @test */
     public function can_fetch_the_asociated_author_identifier(): void
@@ -23,8 +21,8 @@ class AuthorRelationshipTest extends TestCase
             ->assertExactJson([
                 'data' => [
                     'id' => $comment->author->getRouteKey(),
-                    'type' => 'authors'
-                ]
+                    'type' => 'authors',
+                ],
             ]);
     }
 
@@ -47,7 +45,6 @@ class AuthorRelationshipTest extends TestCase
             ],
         ]);
     }
-
 
     /** @test */
     public function can_update_the_comments_associated_author(): void
@@ -79,7 +76,6 @@ class AuthorRelationshipTest extends TestCase
         ]);
 
     }
-
 
     /** @test */
     public function autthor_must_exist_in_database(): void
