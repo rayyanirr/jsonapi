@@ -40,5 +40,21 @@ class IcludeCommentsTest extends TestCase
         ]));
     }
 
+    /** @test */
+    public function can_include_related_comments_of_multiple_articles() : void {
+
+        $article = Article::factory()->hasComments(2)->create();
+        $article2 = Article::factory()->hasComments(2)->create();
+
+        $url = route('api.v1.articles.index',[
+
+            'include' => 'comments'
+        ]);
+
+        $response = $this->getJson($url);
+
+        $response->assertJsonCount(4, 'included');
+    }
+
 
 }
