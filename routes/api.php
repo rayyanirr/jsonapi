@@ -13,19 +13,33 @@ use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\ArticleAuthorController;
 use App\Http\Controllers\Api\CommentArticleController;
 use App\Http\Controllers\Api\ArticleCategoryController;
+use App\Http\Controllers\Api\CommentAuthorController;
 
 Route::apiResource('articles', ArticleController::class);
 Route::apiResource('comments', CommentController::class);
 Route::apiResource('authors', AuthorController::class)->only('index', 'show');
 Route::apiResource('categories', CategoryController::class)->only('index', 'show');
 
-Route::controller(CommentArticleController::class)
-    ->prefix('comments/{comment}')
-    ->group(function () {
-        Route::get('article', 'show')->name('comments.article');
-        Route::get('relationships/article', 'index')->name('comments.relationships.article');
-        Route::patch('relationships/article', 'update')->name('comments.relationships.article.update');
-    });
+
+Route::prefix('comments/{comment}')->group(function () {
+
+    Route::controller(CommentArticleController::class)
+        ->group(function () {
+            Route::get('article', 'show')->name('comments.article');
+            Route::get('relationships/article', 'index')->name('comments.relationships.article');
+            Route::patch('relationships/article', 'update')->name('comments.relationships.article.update');
+        });
+
+     Route::controller(CommentAuthorController::class)
+        ->group(function () {
+
+            Route::get('relationships/author', 'index')->name('comments.relationships.author');
+            Route::get('author', 'show')->name('comments.author');
+            Route::patch('relationships/author', 'update')->name('comments.relationships.author.update');
+        });
+});
+
+
 
 Route::prefix('articles/{article}')->group(function () {
 
@@ -42,7 +56,6 @@ Route::prefix('articles/{article}')->group(function () {
             Route::get('relationships/author', 'index')->name('articles.relationships.author');
             Route::patch('relationships/author', 'update')->name('articles.relationships.author.update');
         });
-
 });
 
 Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders::class])
