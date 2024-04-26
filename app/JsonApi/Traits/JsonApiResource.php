@@ -90,7 +90,7 @@ trait JsonApiResource
             }
         }
 
-        $collection->with['links'] = ['self' => $resources->path()];
+        $collection->with['links'] = ['self' => request()->path()];
 
         return $collection;
     }
