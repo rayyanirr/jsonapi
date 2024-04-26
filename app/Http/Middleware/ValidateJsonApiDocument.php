@@ -19,7 +19,7 @@ class ValidateJsonApiDocument
                 'data' => ['required', 'array'],
                 'data.type' => [
                     'required_without:data.0.type',
-                    'string'
+                    'string',
                 ],
                 'data.attributes' => [
                     Rule::requiredIF(

@@ -40,7 +40,7 @@ class CommentsRelationshiTest extends TestCase
         $response->assertJsonCount(0, 'data');
 
         $response->assertExactJson([
-            'data' => []
+            'data' => [],
         ]);
     }
 
@@ -56,24 +56,24 @@ class CommentsRelationshiTest extends TestCase
         $response->assertJson([
             'data' => [
                 [
-                    'id' => (string)$article->comments[0]->getRouteKey(),
+                    'id' => (string) $article->comments[0]->getRouteKey(),
                     'type' => 'comments',
                     'attributes' => [
-                        'body' => $article->comments[0]->body
-                    ]
+                        'body' => $article->comments[0]->body,
+                    ],
                 ],
                 [
-                    'id' => (string)$article->comments[1]->getRouteKey(),
+                    'id' => (string) $article->comments[1]->getRouteKey(),
                     'type' => 'comments',
                     'attributes' => [
-                        'body' => $article->comments[1]->body
-                    ]
-                ]
-            ]
+                        'body' => $article->comments[1]->body,
+                    ],
+                ],
+            ],
         ]);
     }
 
-     /** @test */
+    /** @test */
     public function can_update_the_asociated_comments(): void
     {
         $comments = Comment::factory(2)->create();
@@ -86,26 +86,26 @@ class CommentsRelationshiTest extends TestCase
             'data' => [
                 [
                     'type' => 'comments',
-                    'id' => $comments[0]->getRouteKey()
+                    'id' => $comments[0]->getRouteKey(),
                 ],
                 [
                     'type' => 'comments',
-                    'id' => $comments[1]->getRouteKey()
+                    'id' => $comments[1]->getRouteKey(),
                 ],
-            ]
+            ],
         ]);
 
         $response->assertJsonCount(2, 'data');
 
         $comments->map(fn ($comment) => $response->assertJsonFragment([
             'type' => 'comments',
-            'id' => (string)$comment->getRouteKey(),
+            'id' => (string) $comment->getRouteKey(),
         ]));
 
         $comments->map(fn ($comment) => $this->assertDatabaseHas('comments', [
 
             'body' => $comment->body,
-            'article_id' => $article->id
+            'article_id' => $article->id,
         ]));
     }
 }

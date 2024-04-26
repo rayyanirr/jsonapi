@@ -67,9 +67,9 @@ class ValidateJsonApiDocumentTest extends TestCase
             'data' => [
                 [
 
-                    'id' => "1",
-                    "type" => 'string'
-                ]
+                    'id' => '1',
+                    'type' => 'string',
+                ],
             ],
         ])->assertSuccessful();
     }

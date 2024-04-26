@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Article;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CommentResource;
 
 class ArticleCommentsController extends Controller
 {
@@ -20,16 +20,15 @@ class ArticleCommentsController extends Controller
         return CommentResource::collection($article->comments);
     }
 
-
     public function update(Article $article, Request $request)
     {
-        $commentsIds =  $request->input('data.*.id');
+        $commentsIds = $request->input('data.*.id');
 
         $comments = Comment::find($commentsIds);
 
         $comments->each->update([
 
-            'article_id' => $article->id
+            'article_id' => $article->id,
 
         ]);
 
