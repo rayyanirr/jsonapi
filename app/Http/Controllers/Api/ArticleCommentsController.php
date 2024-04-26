@@ -22,6 +22,11 @@ class ArticleCommentsController extends Controller
 
     public function update(Article $article, Request $request)
     {
+
+        $request->validate([
+                'data.*.id' => ['exists:comments,id']
+            ]);
+
         $commentsIds = $request->input('data.*.id');
 
         $comments = Comment::find($commentsIds);
