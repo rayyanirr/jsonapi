@@ -17,10 +17,14 @@ class ValidateJsonApiDocument
 
             $request->validate([
                 'data' => ['required', 'array'],
-                'data.type' => ['required', 'string'],
+                'data.type' => [
+                    'required_without:data.0.type',
+                    'string'
+                ],
                 'data.attributes' => [
                     Rule::requiredIF(
                         ! Str::of(request()->url())->contains('relationships')
+                        && request()->isNotFilled('data.0.type')
                     ),
                     'array',
 
@@ -30,7 +34,9 @@ class ValidateJsonApiDocument
 
         if ($request->isMethod('PATCH')) {
             $request->validate([
-                'data.id' => ['required', 'string'],
+                'data.id' => [
+                    'required_without:data.0.id',
+                    'string'],
 
             ]);
         }
