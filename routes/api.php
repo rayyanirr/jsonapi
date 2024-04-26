@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ArticleAuthorController;
 use App\Http\Controllers\Api\CommentAuthorController;
 use App\Http\Controllers\Api\CommentArticleController;
 use App\Http\Controllers\Api\ArticleCategoryController;
+use App\Http\Controllers\Api\ArticleCommentsController;
 
 Route::apiResource('articles', ArticleController::class);
 Route::apiResource('comments', CommentController::class);
@@ -53,6 +54,11 @@ Route::prefix('articles/{article}')->group(function () {
             Route::get('relationships/author', 'index')->name('articles.relationships.author');
             Route::patch('relationships/author', 'update')->name('articles.relationships.author.update');
         });
+
+    Route::controller(ArticleCommentsController::class)
+    ->group(function () {
+        Route::get('relationships/comments', 'index')->name('articles.relationships.comments');
+    });
 });
 
 Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders::class])

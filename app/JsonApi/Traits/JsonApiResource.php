@@ -3,10 +3,12 @@
 namespace App\JsonApi\Traits;
 
 use App\JsonApi\Document;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\MissingValue;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection;
 
 trait JsonApiResource
 {
@@ -93,11 +95,17 @@ trait JsonApiResource
         return $collection;
     }
 
-    public static function identifier($resource): array
+    public static function identifier(Model $resource): array
     {
         return Document::type($resource->getResourceType())
             ->id(
                 $resource->getRouteKey()
             )->toArray();
+    }
+
+    public static function identifiers(Collection $resources): array
+    {
+        return Document::type($resources->first()->getResourceType())
+            ->ids($resources)->toArray();
     }
 }
