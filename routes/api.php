@@ -56,9 +56,9 @@ Route::prefix('articles/{article}')->group(function () {
         });
 
     Route::controller(ArticleCommentsController::class)
-    ->group(function () {
-        Route::get('relationships/comments', 'index')->name('articles.relationships.comments');
-    });
+        ->group(function () {
+            Route::get('relationships/comments', 'index')->name('articles.relationships.comments');
+        });
 });
 
 Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders::class])

@@ -3,12 +3,12 @@
 namespace App\JsonApi\Traits;
 
 use App\JsonApi\Document;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\MissingValue;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Collection;
 
 trait JsonApiResource
 {

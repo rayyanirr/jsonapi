@@ -2,8 +2,8 @@
 
 namespace App\JsonApi;
 
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class Document extends Collection
 {
@@ -30,7 +30,7 @@ class Document extends Collection
     {
         $this->items['data'] = $resources->map(fn ($resource) => [
             'id' => (string) $resource->getRouteKey(),
-            'type' => $resource->getResourceType()
+            'type' => $resource->getResourceType(),
         ]);
 
         return $this;
