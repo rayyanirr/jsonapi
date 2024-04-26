@@ -78,4 +78,10 @@ class Document extends Collection
 
         return $this;
     }
+
+    public static function empty() : array
+    {
+        return ['data' => []];
+
+    }
 }

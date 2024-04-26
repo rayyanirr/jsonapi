@@ -33,7 +33,7 @@ trait JsonApiResource
             ->attributes($this->filterAttributes($this->toJsonApi()))
             ->relationshipsLinks($this->getRelationshipLinks())
             ->links([
-                'self' => route('api.v1.'.$this->resource->getResourceType().'.show', $this->resource),
+                'self' => route('api.v1.' . $this->resource->getResourceType() . '.show', $this->resource),
             ])
             ->get('data');
     }
@@ -52,7 +52,7 @@ trait JsonApiResource
     {
         $response->header(
             'Location',
-            route('api.v1.'.$this->getResourceType().'.show', $this->resource)
+            route('api.v1.' . $this->getResourceType() . '.show', $this->resource)
         );
     }
 
@@ -62,7 +62,7 @@ trait JsonApiResource
             if (request()->isNotFilled('fields')) {
                 return true;
             }
-            $fields = explode(',', request('fields.'.$this->getResourceType()));
+            $fields = explode(',', request('fields.' . $this->getResourceType()));
             if ($value === $this->getRouteKey()) {
                 return in_array($this->getRouteKeyName(), $fields);
             }
@@ -105,7 +105,8 @@ trait JsonApiResource
 
     public static function identifiers(Collection $resources): array
     {
-        return Document::type($resources->first()->getResourceType())
+
+        return $resources->isEmpty() ? Document::empty() : Document::type($resources->first()->getResourceType())
             ->ids($resources)->toArray();
     }
 }
