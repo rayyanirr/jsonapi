@@ -3,6 +3,7 @@
 namespace App\JsonApi;
 
 use Closure;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class JsonApiRequest
@@ -74,6 +75,32 @@ class JsonApiRequest
             /** @var Request $this */
 
             return $this->hasRelationships() && isset($this->validateData()['relationships'][$relation]);
+        };
+    }
+
+    public function getResourceType(): Closure
+    {
+
+        return function () {
+            /** @var Request $this */
+
+            return $this->filled('data.type')
+                ? $this->input('data.type')
+                : (string) Str::of($this->path())->after('api/v1/')->before('/');
+        };
+    }
+
+    public function getResourceId(): Closure
+    {
+
+        return function () {
+            /** @var Request $this */
+
+            $type = $this->getResourceType();
+
+            return  $this->filled('data.id')
+                ? $this->input('data.id')
+                : (string) Str::of($this->path())->after($type)->replace('/', '');
         };
     }
 }

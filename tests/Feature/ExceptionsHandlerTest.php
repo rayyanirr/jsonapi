@@ -19,5 +19,11 @@ class ExceptionsHandlerTest extends TestCase
                 detail: 'The route api/route could not be found.',
                 status: '404'
             );
+
+        $this->getJson('api/v1/invalid-resource/invalid-id')
+            ->assertJsonApiError(
+                detail: 'The route api/v1/invalid-resource/invalid-id could not be found.',
+                status: '404'
+            );
     }
 }
