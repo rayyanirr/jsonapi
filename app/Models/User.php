@@ -61,4 +61,10 @@ class User extends Authenticatable
 
         return $this->permissions()->syncWithoutDetaching($permission);
     }
+
+    public function articles()
+    {
+
+        return $this->hasMany(Article::class);
+    }
 }
