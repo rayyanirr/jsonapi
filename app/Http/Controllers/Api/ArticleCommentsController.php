@@ -24,8 +24,8 @@ class ArticleCommentsController extends Controller
     {
 
         $request->validate([
-                'data.*.id' => ['exists:comments,id']
-            ]);
+            'data.*.id' => ['exists:comments,id'],
+        ]);
 
         $commentsIds = $request->input('data.*.id');
 

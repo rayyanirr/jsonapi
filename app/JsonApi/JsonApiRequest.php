@@ -95,10 +95,9 @@ class JsonApiRequest
 
         return function () {
             /** @var Request $this */
-
             $type = $this->getResourceType();
 
-            return  $this->filled('data.id')
+            return $this->filled('data.id')
                 ? $this->input('data.id')
                 : (string) Str::of($this->path())->after($type)->replace('/', '');
         };

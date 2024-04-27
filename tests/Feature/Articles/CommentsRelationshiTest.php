@@ -109,17 +109,18 @@ class CommentsRelationshiTest extends TestCase
         ]));
     }
 
-     /** @test */
-    public function comments_must_exist_in_database()  {
+    /** @test */
+    public function comments_must_exist_in_database()
+    {
 
         $article = Article::factory()->create();
 
         $url = route('api.v1.articles.relationships.comments.update', $article);
 
-        $this->patchJson($url,[
+        $this->patchJson($url, [
             'data' => [
-                ['type' => 'comments', 'id' => 'doesnt-exists']
-            ]
+                ['type' => 'comments', 'id' => 'doesnt-exists'],
+            ],
         ])->assertJsonApiValidationErrors('data.0.id');
 
         $this->assertDatabaseEmpty('comments');

@@ -36,7 +36,7 @@ class ArticleController extends Controller implements HasMiddleware
     public function index(): AnonymousResourceCollection
     {
         $articles = Article::query()
-            ->allowedIncludes(['category', 'author','comments'])
+            ->allowedIncludes(['category', 'author', 'comments'])
             ->allowedFilters(['title', 'content', 'month', 'year', 'categories'])
             ->allowedSorts(['title', 'content'])
             ->sparseFieldset()

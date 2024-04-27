@@ -20,9 +20,9 @@ trait JsonApiResource
 
             foreach ($this->getIncludes() as $include) {
 
-                if($include->resource instanceof  collection){
+                if ($include->resource instanceof collection) {
 
-                    $include->resource->each(fn ($r) =>  $this->with['included'][] = $r);
+                    $include->resource->each(fn ($r) => $this->with['included'][] = $r);
 
                     continue;
 
@@ -86,7 +86,7 @@ trait JsonApiResource
 
                 foreach ($resource->getIncludes() as $include) {
 
-                    if($include->resource instanceof  collection){
+                    if ($include->resource instanceof collection) {
 
                         $include->resource->each(fn ($r) => $collection->with['included'][] = $r);
 

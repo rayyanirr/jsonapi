@@ -5,7 +5,6 @@ namespace App\Exceptions\JsonApi;
 use Exception;
 use Illuminate\Http\Request;
 
-
 class NotFoundHttpException extends Exception
 {
     /**
@@ -25,13 +24,13 @@ class NotFoundHttpException extends Exception
         ], 404);
     }
 
-
-    public function getDetail($request):string  {
+    public function getDetail($request): string
+    {
 
         if (str($this->getMessage())->startsWith('No query results for model')) {
 
-          return "No records found with the id '{$request->getResourceId()}'"
-                    . " in the '{$request->getResourceType()}' resource.";
+            return "No records found with the id '{$request->getResourceId()}'"
+                      ." in the '{$request->getResourceType()}' resource.";
 
         }
 
