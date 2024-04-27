@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Route;
-use App\JsonApi\Middleware\ValidateJsonApiDocument;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\JsonApi\Middleware\ValidateJsonApiDocument;
 
 class ValidateJsonApiDocumentTest extends TestCase
 {
