@@ -45,7 +45,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->renderable(function (NotFoundHttpException $e) {
 
-            throw new JsonApiNotFoundHttpException();
+            throw new JsonApiNotFoundHttpException($e->getMessage());
         });
 
         $exceptions->renderable(function (BadRequestHttpException $e) {
