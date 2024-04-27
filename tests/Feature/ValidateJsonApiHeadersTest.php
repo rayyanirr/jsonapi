@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\ValidateJsonApiHeaders;
+use App\JsonApi\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ValidateJsonApiHeadersTest extends TestCase

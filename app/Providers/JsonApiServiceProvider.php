@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Http\Request;
-use App\JsonApi\JsonApiRequest;
-use App\JsonApi\JsonApiQueryBuilder;
-use App\JsonApi\JsonApiTestResponse;
+use App\JsonApi\Mixins\JsonApiRequest;
+use App\JsonApi\Mixins\JsonApiQueryBuilder;
+use App\JsonApi\Mixins\JsonApiTestResponse;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;

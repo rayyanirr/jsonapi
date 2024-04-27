@@ -4,16 +4,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Illuminate\Validation\ValidationException;
-use App\Http\Middleware\ValidateJsonApiHeaders;
-use App\Http\Middleware\ValidateJsonApiDocument;
-use App\Exceptions\JsonApi\AuthenticationException;
+use App\JsonApi\Middleware\ValidateJsonApiHeaders;
+use App\JsonApi\Middleware\ValidateJsonApiDocument;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Responses\JsonApiValidationErrorResponse;
+use App\JsonApi\Http\Responses\JsonApiValidationErrorResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use App\Http\Middleware\RedirectUsersIfAutenticatedMiddleware;
-use App\Exceptions\JsonApi\HttpException as JsonApiHttpException;
+use App\JsonApi\Middleware\RedirectUsersIfAutenticatedMiddleware;
 use Illuminate\Auth\AuthenticationException as AuthAuthenticationException;
+use App\JsonApi\Exceptions\AuthenticationException;
+use App\JsonApi\Exceptions\HttpException as JsonApiHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
