@@ -17,10 +17,11 @@ use Illuminate\Auth\AuthenticationException as AuthAuthenticationException;
 use App\Exceptions\JsonApi\NotFoundHttpException as JsonApiNotFoundHttpException;
 use App\Exceptions\JsonApi\BadRequestHttpException as JsonApiBadRequestHttpException;
 
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
         then: function () {
             Route::middleware('api')
@@ -43,19 +44,20 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        $exceptions->renderable(function (NotFoundHttpException $e) {
+        $exceptions->renderable(function (NotFoundHttpException $e, Request $request) {
 
-            throw new JsonApiNotFoundHttpException($e->getMessage());
+            $request->isJsonApi() && throw new JsonApiNotFoundHttpException($e->getMessage());
         });
 
-        $exceptions->renderable(function (BadRequestHttpException $e) {
+        $exceptions->renderable(function (BadRequestHttpException $e, Request $request) {
 
-            throw new JsonApiBadRequestHttpException($e->getMessage());
+            $request->isJsonApi() && throw new JsonApiBadRequestHttpException($e->getMessage());
         });
 
-        $exceptions->renderable(function (AuthAuthenticationException $e) {
+        $exceptions->renderable(function (AuthAuthenticationException $e, Request $request) {
 
-            throw new AuthenticationException();
+
+            $request->isJsonApi() && throw new AuthenticationException();
         });
 
         $exceptions->render(function (ValidationException $e, Request $request) {
@@ -65,6 +67,5 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return false;
-
         });
     })->create();

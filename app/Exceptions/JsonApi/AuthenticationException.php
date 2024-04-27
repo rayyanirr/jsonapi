@@ -8,6 +8,7 @@ class AuthenticationException extends Exception
 {
     public function render()
     {
+
         return response()->json([
             'errors' => [
                 [

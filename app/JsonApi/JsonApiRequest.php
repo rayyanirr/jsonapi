@@ -14,7 +14,14 @@ class JsonApiRequest
         return function () {
 
             /** @var Request $this */
-            if ($this->header('accept' === 'application/vnd.api+json')) {
+
+
+
+            if(! str($this->path())->startsWith('api')) {
+                return false;
+            }
+
+            if ($this->header('accept') === 'application/vnd.api+json') {
 
                 return true;
             }
