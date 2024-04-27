@@ -10,18 +10,15 @@ use App\Exceptions\JsonApi\AuthenticationException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Responses\JsonApiValidationErrorResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Http\Middleware\RedirectUsersIfAutenticatedMiddleware;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Exceptions\JsonApi\HttpException as JsonApiHttpException;
 use Illuminate\Auth\AuthenticationException as AuthAuthenticationException;
-use App\Exceptions\JsonApi\NotFoundHttpException as JsonApiNotFoundHttpException;
-use App\Exceptions\JsonApi\BadRequestHttpException as JsonApiBadRequestHttpException;
-
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        commands: __DIR__ . '/../routes/console.php',
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
             Route::middleware('api')
@@ -44,18 +41,12 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        $exceptions->renderable(function (NotFoundHttpException $e, Request $request) {
+        $exceptions->renderable(function (HttpException $e, Request $request) {
 
-            $request->isJsonApi() && throw new JsonApiNotFoundHttpException($e->getMessage());
-        });
-
-        $exceptions->renderable(function (BadRequestHttpException $e, Request $request) {
-
-            $request->isJsonApi() && throw new JsonApiBadRequestHttpException($e->getMessage());
+            $request->isJsonApi() && throw new JsonApiHttpException($e);
         });
 
         $exceptions->renderable(function (AuthAuthenticationException $e, Request $request) {
-
 
             $request->isJsonApi() && throw new AuthenticationException();
         });

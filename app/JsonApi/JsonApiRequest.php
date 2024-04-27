@@ -14,10 +14,7 @@ class JsonApiRequest
         return function () {
 
             /** @var Request $this */
-
-
-
-            if(! str($this->path())->startsWith('api')) {
+            if (! str($this->path())->startsWith('api')) {
                 return false;
             }
 

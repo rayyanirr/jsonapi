@@ -25,13 +25,13 @@ class ExceptionsHandlerTest extends TestCase
             );
     }
 
-     /** @test */
-     public function default_laravel_error_is_shown_to_requests_outside_the_prefix_api(): void
-     {
+    /** @test */
+    public function default_laravel_error_is_shown_to_requests_outside_the_prefix_api(): void
+    {
         $this->getJson('non/api/route')
-        ->assertJson([
-            'message' => 'The route non/api/route could not be found.',
-        ]);
+            ->assertJson([
+                'message' => 'The route non/api/route could not be found.',
+            ]);
 
         $this->withoutJsonApiHeaders()
             ->getJson('non/api/route')
@@ -39,6 +39,5 @@ class ExceptionsHandlerTest extends TestCase
                 'message' => 'The route non/api/route could not be found.',
             ]);
 
-
-     }
+    }
 }
