@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\CommentAuthorController;
 use App\Http\Controllers\Api\CommentArticleController;
 use App\Http\Controllers\Api\ArticleCategoryController;
 use App\Http\Controllers\Api\ArticleCommentsController;
+use App\Http\Controllers\Api\AutheticatedUserController;
 
 Route::apiResource('articles', ArticleController::class);
 Route::apiResource('comments', CommentController::class);
@@ -73,4 +74,6 @@ Route::withoutMiddleware([ValidateJsonApiDocument::class, ValidateJsonApiHeaders
 
         Route::post('register', RegisterController::class)
             ->name('register');
+
+        Route::get('user', AutheticatedUserController::class)->middleware('auth:sanctum')->name('auth.user');
     });

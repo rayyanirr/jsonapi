@@ -28,6 +28,10 @@ class JsonApiQueryBuilder
                         throw new BadRequestHttpException("the sort field '{$sortField}' is not allowed in the '{$this->getResourceType()}' resource");
                     }
 
+                    $sortField = str($sortField)->replace('-', '_');
+
+                    //@todo Verificar que exista en la base de datos el sortfield
+
                     $this->orderBy($sortField, $sortDirection);
                 }
             }
@@ -97,6 +101,12 @@ class JsonApiQueryBuilder
             if (! in_array($routeKeyName, $fields)) {
                 $fields[] = $routeKeyName;
             }
+
+            $fields = array_map(function ($field) {
+                return str($field)->replace('-', '_');
+            }, $fields);
+
+            //@todo Verificar que exista en la base de datos los campos
 
             return $this->addSelect($fields);
         };

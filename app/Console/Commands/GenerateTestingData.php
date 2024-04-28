@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Article;
-use App\Models\Category;
-use App\Models\Comment;
 use App\Models\User;
+use App\Models\Article;
+use App\Models\Comment;
+use App\Models\Category;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 
@@ -32,7 +32,7 @@ class GenerateTestingData extends Command
      */
     public function handle()
     {
-        if(! $this->confirmToProceed()){
+        if (! $this->confirmToProceed()) {
             return 1;
         }
 
@@ -43,7 +43,7 @@ class GenerateTestingData extends Command
 
         $user = User::factory()->hasArticles(1)->create([
             'name' => 'Rayyanir',
-            'email' => 'rayyanir.rosales@gmail.com'
+            'email' => 'rayyanir.rosales@gmail.com',
         ]);
 
         $articles = Article::factory()->count(14)->hasComments(5)->create();

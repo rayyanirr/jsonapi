@@ -69,4 +69,12 @@ class Article extends Model
             $q->whereIn('slug', $categorySlugs);
         });
     }
+
+    public function scopeAuthors(Builder $query, $authors): void
+    {
+        $authorsNames = explode(',', $authors);
+        $query->whereHas('author', function ($q) use ($authorsNames) {
+            $q->whereIn('name', $authorsNames);
+        });
+    }
 }
