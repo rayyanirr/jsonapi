@@ -57,8 +57,8 @@ class GenerateTestingData extends Command
         $this->info('Article ID:');
         $this->line($user->articles->first()->slug);
 
-        $this->info('Category ID:');
-        $this->line($articles->first()->category->id);
+        $this->info('Category Slug:');
+        $this->line($articles->first()->category->slug);
 
         $this->info('comment ID:');
         $this->line($articles->first()->comments->random()->id);
