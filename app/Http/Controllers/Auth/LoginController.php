@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,6 +10,7 @@ use App\Http\Responses\TokenResponse;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller implements HasMiddleware
 {
@@ -33,14 +34,14 @@ class LoginController extends Controller implements HasMiddleware
 
         ]);
 
-        $user = User::whereEmail($request->email)->first();
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (! Auth::guard('ldap')->attempt(['mail' => $request->email, 'password' => $request->password]))
+        {
             throw ValidationException::withMessages([
                 'email' => [__('auth.failed')],
             ]);
-
         }
+
+        $user = User::where('email', $request->email)->first();
 
         return new TokenResponse($user);
     }

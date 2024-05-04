@@ -1,13 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\AuthorController;
-use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\RegisterController;
 use App\JsonApi\Middleware\ValidateJsonApiHeaders;
 use App\JsonApi\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\ArticleAuthorController;
@@ -15,7 +12,10 @@ use App\Http\Controllers\Api\CommentAuthorController;
 use App\Http\Controllers\Api\CommentArticleController;
 use App\Http\Controllers\Api\ArticleCategoryController;
 use App\Http\Controllers\Api\ArticleCommentsController;
-use App\Http\Controllers\Api\AutheticatedUserController;
+use App\Http\Controllers\Auth\AutheticatedUserController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\RegisterController;
 
 Route::apiResource('articles', ArticleController::class);
 Route::apiResource('comments', CommentController::class);

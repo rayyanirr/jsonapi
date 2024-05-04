@@ -109,6 +109,18 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'cortesia' => [
+            'driver' => 'sqlsrv',
+            'host' => env('CORTESIA_HOST', 'localhost'),
+            'port' => env('CORTESIA_PORT', '1433'),
+            'database' => env('CORTESIA_DATABASE', 'forge'),
+            'username' => env('CORTESIA_USERNAME', 'forge'),
+            'password' => env('CORTESIA_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
+
     ],
 
     /*

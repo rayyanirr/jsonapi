@@ -9,10 +9,13 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
+use LdapRecord\Laravel\Auth\LdapAuthenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements LdapAuthenticatable
 {
-    use HasApiTokens, HasFactory, HasUuid, Notifiable;
+    use HasApiTokens, HasFactory, HasUuid, Notifiable, AuthenticatesWithLdap, HasRoles;
 
     public $resourceType = 'authors';
 
@@ -50,17 +53,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function permissions()
-    {
-
-        return $this->belongsToMany(Permission::class);
-    }
-
-    public function givePermissionTo(Permission $permission)
-    {
-
-        return $this->permissions()->syncWithoutDetaching($permission);
-    }
 
     public function articles()
     {

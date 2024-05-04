@@ -13,6 +13,8 @@ class JsonApiQueryBuilder
 
         return function ($allowedSorts) {
             /** @var Builder $this */
+            $fieldMap = $this->getModel()->getFieldMap();
+
             if (request()->filled('sort')) {
 
                 $sortFields = explode(',', request()->input('sort'));
@@ -28,11 +30,13 @@ class JsonApiQueryBuilder
                         throw new BadRequestHttpException("the sort field '{$sortField}' is not allowed in the '{$this->getResourceType()}' resource");
                     }
 
-                    $sortField = str($sortField)->replace('-', '_');
+                    //$sortField = str($sortField)->replace('-', '_');
+
+                    $originalField = array_search($sortField, $fieldMap);
 
                     //@todo Verificar que exista en la base de datos el sortfield
 
-                    $this->orderBy($sortField, $sortDirection);
+                    $this->orderBy($originalField, $sortDirection);
                 }
             }
 
@@ -45,6 +49,8 @@ class JsonApiQueryBuilder
 
         return function ($allowedFilters) {
             /** @var Builder $this */
+            $fieldMap = $this->getModel()->getFieldMap();
+
             foreach (request('filter', []) as $filter => $value) {
 
                 if (! in_array($filter, $allowedFilters)) {
@@ -52,9 +58,11 @@ class JsonApiQueryBuilder
                     throw new BadRequestHttpException("the filter field '{$filter}' is not allowed in the '{$this->getResourceType()}' resource");
                 }
 
+                $originalField = array_search($filter, $fieldMap);
+
                 $this->hasNamedScope($filter) ?
                     $this->{$filter}($value) :
-                    $this->where($filter, 'like', '%'.$value.'%');
+                    $this->where($originalField, 'like', '%'.$value.'%');
             }
 
             return $this;

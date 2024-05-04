@@ -4,6 +4,7 @@ namespace App\Http\Responses;
 
 use App\Models\User;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Support\Facades\Auth;
 
 class TokenResponse implements Responsable
 {
@@ -20,7 +21,7 @@ class TokenResponse implements Responsable
 
         $plainTextToken = $this->user->createToken(
             $request->device_name,
-            $this->user->permissions->pluck('name')->toArray()
+            $this->user->getAllPermissions()->pluck('name')->toArray()
         )->plainTextToken;
 
         return response()->json([
