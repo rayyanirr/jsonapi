@@ -30,7 +30,7 @@ class CuponPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->can('cupons.store');
     }
 
     /**

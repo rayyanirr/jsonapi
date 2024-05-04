@@ -15,70 +15,85 @@ class Cupon extends Model
     protected $primaryKey = 'ID';
     public $resourceType = 'cupons';
 
-    protected $fillable = [];
+    protected static function boot()
+    {
+        parent::boot();
 
-    protected $fieldMap = [
-        'ID' => 'id',
-        'NOMBRE' => 'name',
-        'CODIGO' => 'code',
-        'PRODNUM' => 'cod-prod',
-        'TIPO' => 'type',
-        'STATUS' => 'status',
-        'FECHA_ACTIVACION' => 'activation-date',
-        'FECHA_EXPIRACION' => 'expiration-date',
-        'RESULTADO' => 'result',
-        'CORREO' => 'email',
-        'FECHA_CREACION' => 'created-at',
-        'STATUS_ENVIO_CORREO' => 'status_email',
-        'IP_CREACION' => 'ip-creation',
-        'NOMBRE_EQUIPO' => 'name-equipment',
-        'TIPO_CORTESIA' => 'type-courtesy',
-        'CEDULA_EMPLEADO' => 'employee-id'
+        static::creating(function ($model) {
+            // Asignar valores predeterminados
+            $defaults = [
+                'FECHA_CREACION' => date('Y-m-d'),
+                'STATUS' => 0,
+                'IP_CREACION' => request()->user()->name,
+                'NOMBRE_EQUIPO' => gethostname()
+
+            ];
+
+            foreach ($defaults as $key => $value) {
+                if (!isset($model->$key)) {
+                    $model->$key = $value;
+                }
+            }
+        });
+    }
+
+    protected $fillable = [
+        'id',
+        'name',
+        'code',
+        'cod-prod',
+        'type',
+        'status',
+        'activation-date',
+        'expiration-date',
+        'result',
+        'email',
+        'created-at',
+        'status_email',
+        'ip-creation',
+        'name-equipment',
+        'type-courtesy',
+        'employee-id'
+
     ];
 
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
+    protected $fieldMap = [
+        'id' => 'ID',
+        'name' => 'NOMBRE',
+        'code' => 'CODIGO',
+        'cod-prod' => 'PRODNUM',
+        'type' => 'TIPO',
+        'status' => 'STATUS',
+        'activation-date' => 'FECHA_ACTIVACION',
+        'expiration-date' => 'FECHA_EXPIRACION',
+        'result' => 'RESULTADO',
+        'email' => 'CORREO',
+        'created-at' => 'FECHA_CREACION',
+        'status_email' => 'STATUS_ENVIO_CORREO',
+        'ip-creation' => 'IP_CREACION',
+        'name-equipment' => 'NOMBRE_EQUIPO',
+        'type-courtesy' => 'TIPO_CORTESIA',
+        'employee-id' => 'CEDULA_EMPLEADO'
+    ];
 
-        // Crear dinámicamente los métodos de acceso y mutadores
-        foreach ($this->fieldMap as $original => $mapped) {
-            $this->addDynamicMethod($original, $mapped);
-        }
+    public function getAttribute($key)
+    {
+        $key = $this->fieldMap[$key] ?? $key;
+
+        return parent::getAttribute($key);
     }
 
-    protected function addDynamicMethod($original, $mapped)
+    public function setAttribute($key, $value)
     {
-        $this->addGetter($original, $mapped);
-        $this->addSetter($original, $mapped);
+        $key = $this->fieldMap[$key] ?? $key;
+
+        return parent::setAttribute($key, $value);
     }
 
-    protected function addGetter($original, $mapped)
+    public function scopeWhereMapped($query, $attribute, $value)
     {
-        $this->{"get{$mapped}Attribute"} = function () use ($original) {
-            return $this->attributes[$original];
-        };
+        $columnName = $this->fieldMap[$attribute] ?? $attribute;
+
+        return $query->where($columnName, $value);
     }
-
-    protected function addSetter($original, $mapped)
-    {
-        $this->{"set{$mapped}Attribute"} = function ($value) use ($original) {
-            $this->attributes[$original] = $value;
-        };
-    }
-
-    public function getFieldMap()
-    {
-        return $this->fieldMap;
-    }
-
-    public function scopeWhereMapped($query, $field, $operator, $value)
-{
-    // Obtén el mapeo de los campos del modelo actual
-    $fieldMap = $this->getFieldMap();
-
-    // Convertir el nombre del campo mapeado al nombre original del campo
-    $originalField = array_search($field, $fieldMap);
-
-    return $query->where($originalField, $operator, $value);
-}
 }
